@@ -27,7 +27,7 @@ open ScreenRec.xcodeproj
 
 **Aufnehmen**
 
-1. ScreenRec startet in der Menüleiste. Klicke dort auf das Symbol und wähle **ScreenRec öffnen**.
+1. Beim Start öffnet sich das Aufnahmefenster. Hast du es geschlossen, holst du es über das Symbol in der Menüleiste und **ScreenRec öffnen** zurück.
 2. Wähle im Fenster aus, ob Systemton, Mikrofon oder Kamera mitlaufen sollen.
 3. Starte die Aufnahme mit **REC** oder mit **⌘⇧2**. Das Tastenkürzel funktioniert auch, wenn die App im Hintergrund läuft.
 4. Wähle den Bildschirm oder das Fenster aus. Nach dem Countdown läuft die Aufnahme.

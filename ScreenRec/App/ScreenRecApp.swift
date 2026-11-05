@@ -29,6 +29,11 @@ struct ScreenRecApp: App {
         .windowResizability(.contentSize)
         .windowStyle(.hiddenTitleBar)
         .windowBackgroundDragBehavior(.enabled)
+        // Die Menüleiste ist die erste Szene, daher öffnet SwiftUI dieses Fenster
+        // nicht von selbst. Ohne Restoration erscheint es auch dann, wenn es beim
+        // letzten Beenden geschlossen war.
+        .defaultLaunchBehavior(.presented)
+        .restorationBehavior(.disabled)
 
         DocumentGroup(newDocument: { ProjectDocument() }) { file in
             EditorView(document: file.document, fileURL: file.fileURL)

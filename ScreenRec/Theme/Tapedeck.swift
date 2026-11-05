@@ -322,10 +322,10 @@ struct LCDScreen: ViewModifier {
     }
 }
 
-/// Feine Zeilen wie auf einem Röhrenbildschirm; lässt Mausklicks durch.
-struct Scanlines: View {
-    var spacing: CGFloat = 3
-    var darkness = 0.22
+/// Feines Zeilenraster der LCD-Anzeigen; lässt Mausklicks durch.
+private struct Scanlines: View {
+    private let spacing: CGFloat = 3
+    private let darkness = 0.22
 
     var body: some View {
         Canvas { context, size in
@@ -384,22 +384,6 @@ extension View {
     }
 }
 
-/// Leuchtdiode.
-struct LED: View {
-    var color: Color = Tape.green
-    var isOn = true
-    var size: CGFloat = 10
-
-    var body: some View {
-        Circle()
-            .fill(isOn ? color : color.mix(with: Tape.ink, by: 0.65))
-            .overlay { Circle().stroke(.black.opacity(0.25), lineWidth: 1) }
-            .shadow(color: isOn ? color : .clear, radius: 4)
-            .frame(width: size, height: size)
-            .accessibilityHidden(true)
-    }
-}
-
 /// Blinkender Punkt, z. B. während der Aufnahme.
 struct BlinkingDot: View {
     var color: Color = Tape.red
@@ -418,22 +402,6 @@ struct BlinkingDot: View {
                 }
             }
             .accessibilityHidden(true)
-    }
-}
-
-/// Lüftungsschlitze als Zierde.
-struct Vents: View {
-    var count = 14
-
-    var body: some View {
-        HStack(spacing: 4) {
-            ForEach(0..<count, id: \.self) { _ in
-                RoundedRectangle(cornerRadius: 2)
-                    .fill(Tape.line.shadow(.inner(color: .black.opacity(0.4), radius: 1, y: 2)))
-                    .frame(width: 4, height: 16)
-            }
-        }
-        .accessibilityHidden(true)
     }
 }
 

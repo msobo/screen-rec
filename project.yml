@@ -36,8 +36,8 @@ targets:
       path: ScreenRec/Info.plist
       properties:
         CFBundleDisplayName: ScreenRec
-        CFBundleShortVersionString: "0.1.0"
-        CFBundleVersion: "1"
+        CFBundleShortVersionString: "0.2.0"
+        CFBundleVersion: "2"
         LSApplicationCategoryType: public.app-category.video
         NSMicrophoneUsageDescription: ScreenRec nimmt dein Mikrofon zusammen mit dem Bildschirm auf.
         NSCameraUsageDescription: ScreenRec blendet auf Wunsch dein Kamerabild in die Aufnahme ein.

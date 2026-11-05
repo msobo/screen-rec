@@ -182,53 +182,40 @@ private struct EditorHeader: View {
     }
 }
 
-/// Röhrenmonitor mit Gehäuse um die Vorschau. Ein Klick ins Bild startet oder stoppt die Wiedergabe.
+/// Vorschau in einem schmalen Gehäuse. Ein Klick ins Bild startet oder stoppt die Wiedergabe.
 private struct MonitorView: View {
     let playback: PlaybackController?
     let editor: TimelineEditor?
     let aspectRatio: CGFloat
-    @AppStorage("tapedeck.crtEffect") private var crtEffect = true
     @State private var osd: (symbol: String, text: String)?
     @State private var lastRate: Float?
 
     var body: some View {
-        VStack(spacing: 10) {
-            screen
-                .aspectRatio(aspectRatio, contentMode: .fit)
-                .frame(minWidth: 320, minHeight: 180)
-            footer
-        }
-        .padding(.horizontal, 18)
-        .padding(.top, 18)
-        .padding(.bottom, 10)
-        .background {
-            let shape = RoundedRectangle(cornerRadius: 28, style: .continuous)
-            shape.fill(Tape.bezel)
-                .overlay { shape.inset(by: 2).stroke(Color(hex: 0xE8E0C9), lineWidth: 3)
-                    .mask(LinearGradient(colors: [.white, .clear], startPoint: .top, endPoint: .center)) }
-                .overlay { shape.inset(by: 3).stroke(Color(hex: 0xA39980), lineWidth: 6)
-                    .mask(LinearGradient(colors: [.clear, .white], startPoint: .center, endPoint: .bottom)) }
-                .overlay { shape.strokeBorder(Tape.line, lineWidth: 2) }
-                .background { shape.fill(Tape.edge).offset(y: 5) }
-        }
-        .padding(.bottom, 5)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .task(id: playback?.rate) { await showOSD(for: playback?.rate) }
+        screen
+            .frame(minWidth: 320, minHeight: 180)
+            .padding(8)
+            .background {
+                let shape = RoundedRectangle(cornerRadius: 16, style: .continuous)
+                shape.fill(Tape.bezel)
+                    .overlay { shape.inset(by: 2).stroke(Color(hex: 0xE8E0C9), lineWidth: 3)
+                        .mask(LinearGradient(colors: [.white, .clear], startPoint: .top, endPoint: .center)) }
+                    .overlay { shape.inset(by: 3).stroke(Color(hex: 0xA39980), lineWidth: 6)
+                        .mask(LinearGradient(colors: [.clear, .white], startPoint: .center, endPoint: .bottom)) }
+                    .overlay { shape.strokeBorder(Tape.line, lineWidth: 2) }
+                    .background { shape.fill(Tape.edge).offset(y: 5) }
+            }
+            .padding(.bottom, 5)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .task(id: playback?.rate) { await showOSD(for: playback?.rate) }
     }
 
     private var screen: some View {
-        let shape = RoundedRectangle(cornerRadius: 26, style: .continuous)
-        return ZStack {
+        ZStack {
             Color.black
             if let playback {
                 PreviewView(player: playback.player)
             } else {
                 noSignal
-            }
-            if crtEffect {
-                Scanlines(spacing: 3, darkness: 0.16)
-                RadialGradient(colors: [.clear, .black.opacity(0.45)], center: .center, startRadius: 120, endRadius: 520)
-                    .allowsHitTesting(false)
             }
             Color.clear
                 .contentShape(Rectangle())
@@ -239,10 +226,10 @@ private struct MonitorView: View {
             }
             onScreenDisplay
         }
-        .clipShape(shape)
-        .overlay { shape.strokeBorder(Tape.ink, lineWidth: 6) }
-        .padding(3)
-        .background(RoundedRectangle(cornerRadius: 29, style: .continuous).fill(Tape.edge))
+        .aspectRatio(aspectRatio, contentMode: .fit)
+        .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+        .padding(2)
+        .background(RoundedRectangle(cornerRadius: 8, style: .continuous).fill(Tape.edge))
     }
 
     private var noSignal: some View {
@@ -283,28 +270,6 @@ private struct MonitorView: View {
     private var speedAtPlayhead: Double? {
         guard let editor, let playback else { return nil }
         return editor.timeline.speedSegments.first { $0.range.contains(playback.currentTime) }?.speed
-    }
-
-    private var footer: some View {
-        HStack(spacing: 14) {
-            Text("SCREENREC")
-                .font(.tapeDisplay(15))
-                .foregroundStyle(Tape.line)
-                .tracking(2)
-                .shadow(color: Color(hex: 0xE8E0C9), radius: 0, y: 1)
-            ViewThatFits {
-                Text("MODEL SR-6 · COLOR MONITOR").caseLabel(10, color: Tape.inkSoft)
-                Color.clear.frame(width: 0, height: 0)
-            }
-            Vents().frame(maxWidth: .infinity)
-            Toggle("CRT", isOn: $crtEffect)
-                .toggleStyle(.tapeSwitch)
-                .foregroundStyle(Tape.inkSoft)
-                .help("Röhren-Effekt auf der Vorschau. Betrifft nur die Anzeige, nicht den Export.")
-            LED(isOn: playback?.isPlaying == true)
-            Text("PLAY").caseLabel(10, color: Tape.inkSoft)
-        }
-        .padding(.horizontal, 10)
     }
 
     private func showOSD(for rate: Float?) async {
