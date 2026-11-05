@@ -1,6 +1,10 @@
 # ScreenRec
 
 Record your screen, edit it in the built-in editor and export the finished video. A native Mac app.
+--
+![ScreenRec](screenrec1.jpg)
+---
+![ScreenRec](screenrec2.jpg)
 
 ## Installation
 
@@ -53,3 +57,9 @@ ScreenRec is in English by default. To switch to German, open **Settings…**, c
 ## License
 
 GPL-3.0, see [LICENSE](LICENSE). Notes on the components used are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+
+## Support
+
+if you like this project, 
+[Support me](https://buymeacoffee.com/msobo)
