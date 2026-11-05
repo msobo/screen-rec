@@ -12,7 +12,7 @@ struct Look: Codable, Equatable, Sendable {
 
         var title: String {
             switch self {
-            case .source: "Original"
+            case .source: String(localized: "Original")
             case .landscape: "16:9"
             case .square: "1:1"
             case .portrait: "9:16"
@@ -86,10 +86,10 @@ struct Background: Codable, Equatable, Sendable {
 
         var title: String {
             switch self {
-            case .none: "Kein"
-            case .color: "Farbe"
-            case .gradient: "Verlauf"
-            case .image: "Bild"
+            case .none: String(localized: "Kein")
+            case .color: String(localized: "Farbe")
+            case .gradient: String(localized: "Verlauf")
+            case .image: String(localized: "Bild")
             }
         }
     }
@@ -135,10 +135,10 @@ struct CameraStyle: Codable, Equatable, Sendable {
 
         var title: String {
             switch self {
-            case .topLeft: "Oben links"
-            case .topRight: "Oben rechts"
-            case .bottomLeft: "Unten links"
-            case .bottomRight: "Unten rechts"
+            case .topLeft: String(localized: "Oben links")
+            case .topRight: String(localized: "Oben rechts")
+            case .bottomLeft: String(localized: "Unten links")
+            case .bottomRight: String(localized: "Unten rechts")
             }
         }
     }
@@ -146,7 +146,7 @@ struct CameraStyle: Codable, Equatable, Sendable {
     enum Shape: String, Codable, CaseIterable, Sendable {
         case circle, roundedRectangle
 
-        var title: String { self == .circle ? "Kreis" : "Abgerundet" }
+        var title: String { self == .circle ? String(localized: "Kreis") : String(localized: "Abgerundet") }
     }
 
     var corner = Corner.bottomRight

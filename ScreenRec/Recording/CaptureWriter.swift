@@ -36,10 +36,10 @@ final class CaptureWriter: NSObject, SCStreamOutput, @unchecked Sendable {
 
         var errorDescription: String? {
             switch self {
-            case .cannotAddInput(let track): "Spur \(track.rawValue) konnte nicht angelegt werden."
-            case .noVideoFrames: "Es wurde kein einziges Videobild aufgenommen."
+            case .cannotAddInput(let track): String(localized: "Spur \(track.rawValue) konnte nicht angelegt werden.")
+            case .noVideoFrames: String(localized: "Es wurde kein einziges Videobild aufgenommen.")
             case .writerFailed(let track, let error):
-                "Schreiben von \(track.fileName) fehlgeschlagen: \(error?.localizedDescription ?? "unbekannter Fehler")"
+                String(localized: "Schreiben von \(track.fileName) fehlgeschlagen: \(error?.localizedDescription ?? String(localized: "unbekannter Fehler"))")
             }
         }
     }

@@ -21,7 +21,7 @@ struct InspectorView: View {
                 Spacer()
                 ModuleTag(text: tag)
             }
-            KeyPicker(selection: $page, options: [(.selection, "Auswahl"), (.look, "Gestaltung")])
+            KeyPicker(selection: $page, options: [(.selection, String(localized: "Auswahl")), (.look, String(localized: "Gestaltung"))])
             ScrollView {
                 Group {
                     if page == .look {
@@ -56,24 +56,24 @@ struct InspectorView: View {
     }
 
     private var title: String {
-        if page == .look { return "Gestaltung" }
-        if editor.selectedTransition != nil { return "Übergang" }
-        if editor.selectedZoom != nil { return "Zoom" }
+        if page == .look { return String(localized: "Gestaltung") }
+        if editor.selectedTransition != nil { return String(localized: "Übergang") }
+        if editor.selectedZoom != nil { return String(localized: "Zoom") }
         if let annotation = editor.selectedAnnotation { return annotation.kindTitle }
         let count = editor.selectedClips.count
         return switch count {
-        case 0: "Inspektor"
-        case 1: "Clip"
-        default: "\(count) Clips"
+        case 0: String(localized: "Inspektor")
+        case 1: String(localized: "Clip")
+        default: String(localized: "\(count) Clips")
         }
     }
 
     private var tag: String {
-        if page == .look { return "MODUL 04" }
-        if editor.selectedTransition != nil { return "MODUL 02" }
-        if editor.selectedZoom != nil { return "MODUL 03" }
-        if editor.selectedAnnotation != nil { return "MODUL 05" }
-        return editor.selectedClips.isEmpty ? "BEREIT" : "MODUL 01"
+        if page == .look { return String(localized: "MODUL 04") }
+        if editor.selectedTransition != nil { return String(localized: "MODUL 02") }
+        if editor.selectedZoom != nil { return String(localized: "MODUL 03") }
+        if editor.selectedAnnotation != nil { return String(localized: "MODUL 05") }
+        return editor.selectedClips.isEmpty ? String(localized: "BEREIT") : String(localized: "MODUL 01")
     }
 }
 
@@ -117,15 +117,15 @@ private struct ValueRow: View {
 
 private struct EmptyInspector: View {
     private static let shortcuts = [
-        ("S", "Am Playhead teilen"),
-        ("⌫", "Löschen"),
-        ("⇧⌫", "Löschen, Lücke schließen"),
-        ("I  O", "Bereich markieren"),
-        ("⌘R", "Geschwindigkeit"),
-        ("⌘T", "Überblenden"),
-        ("Z", "Zoom setzen"),
-        ("J K L", "Spulen"),
-        ("⌘E", "Exportieren"),
+        ("S", String(localized: "Am Playhead teilen")),
+        ("⌫", String(localized: "Löschen")),
+        ("⇧⌫", String(localized: "Löschen, Lücke schließen")),
+        ("I  O", String(localized: "Bereich markieren")),
+        ("⌘R", String(localized: "Geschwindigkeit")),
+        ("⌘T", String(localized: "Überblenden")),
+        ("Z", String(localized: "Zoom setzen")),
+        ("J K L", String(localized: "Spulen")),
+        ("⌘E", String(localized: "Exportieren")),
     ]
 
     var body: some View {
@@ -141,7 +141,7 @@ private struct EmptyInspector: View {
                 .font(.tapeMono(11))
                 .foregroundStyle(Tape.inkSoft)
                 .fixedSize(horizontal: false, vertical: true)
-            InspectorSection(title: "Tasten") {
+            InspectorSection(title: String(localized: "Tasten")) {
                 Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 8) {
                     ForEach(Self.shortcuts, id: \.0) { key, action in
                         GridRow {
@@ -182,11 +182,11 @@ private struct ClipInspector: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            InspectorSection(title: "Band") {
+            InspectorSection(title: String(localized: "Band")) {
                 // Spanne vom frühesten Anfang bis zum spätesten Ende: Parallele Spuren zählen nur einmal.
-                ValueRow(title: "Dauer", value: TimeFormatting.timecode(
+                ValueRow(title: String(localized: "Dauer"), value: TimeFormatting.timecode(
                     (clips.map(\.timelineEnd).max() ?? .zero) - (clips.map(\.timelineStart).min() ?? .zero)))
-                ValueRow(title: "Geschwindigkeit", value: TimelineCanvas.formatSpeed(speed))
+                ValueRow(title: String(localized: "Geschwindigkeit"), value: TimelineCanvas.formatSpeed(speed))
                 KeyPicker(selection: Binding(get: { speed }, set: { editor.setSpeed($0) }),
                           options: Self.speedPresets.map { ($0, TimelineCanvas.formatSpeed($0)) }, columns: 4)
                 Button { editor.showSpeedSheet() } label: {
@@ -207,37 +207,37 @@ private struct ClipInspector: View {
             }
 
             if !audioClips.isEmpty {
-                InspectorSection(title: "Ton") {
+                InspectorSection(title: String(localized: "Ton")) {
                     Toggle("Stumm", isOn: Binding(get: { audioClips.allSatisfy(\.isMuted) }, set: { muted in
-                        editor.perform(muted ? "Clip stummschalten" : "Clip-Stummschaltung aufheben") { timeline in
+                        editor.perform(muted ? String(localized: "Clip stummschalten") : String(localized: "Clip-Stummschaltung aufheben")) { timeline in
                             timeline.updateClips(Set(audioClips.map(\.id))) { $0.isMuted = muted }
                         }
                     }))
-                    LiveSlider(title: "Lautstärke", value: Double(audioClips[0].volume), range: 0...2,
+                    LiveSlider(title: String(localized: "Lautstärke"), value: Double(audioClips[0].volume), range: 0...2,
                                format: { $0.formatted(.percent.precision(.fractionLength(0))) },
-                               editor: editor, actionName: "Lautstärke ändern") { timeline, value in
+                               editor: editor, actionName: String(localized: "Lautstärke ändern")) { timeline, value in
                         timeline.updateClips(Set(audioClips.map(\.id))) { $0.volume = Float(value) }
                     }
                 }
             }
 
-            InspectorSection(title: "Blenden") {
-                fadeSlider("Einblenden", value: clips[0].fadeIn.seconds) { $0.fadeIn = $1 }
-                fadeSlider("Ausblenden", value: clips[0].fadeOut.seconds) { $0.fadeOut = $1 }
+            InspectorSection(title: String(localized: "Blenden")) {
+                fadeSlider(String(localized: "Blende: Einblenden"), value: clips[0].fadeIn.seconds) { $0.fadeIn = $1 }
+                fadeSlider(String(localized: "Blende: Ausblenden"), value: clips[0].fadeOut.seconds) { $0.fadeOut = $1 }
             }
 
-            InspectorSection(title: "Spur") {
+            InspectorSection(title: String(localized: "Spur")) {
                 ForEach(tracks) { track in
-                    Toggle(track.kind == .video ? "\(track.name) ausblenden" : "\(track.name) stumm",
+                    Toggle(track.kind == .video ? String(localized: "\(track.title) ausblenden") : String(localized: "\(track.title) stumm"),
                            isOn: Binding(get: { track.isMuted }, set: { muted in
-                        editor.perform(muted ? "Stummschalten" : "Stummschaltung aufheben") { timeline in
+                        editor.perform(muted ? String(localized: "Stummschalten") : String(localized: "Stummschaltung aufheben")) { timeline in
                             timeline.updateTrack(track.id) { $0.isMuted = muted }
                         }
                     }))
                     if track.kind == .audio {
-                        LiveSlider(title: "Pegel \(track.name)", value: Double(track.volume), range: 0...2,
+                        LiveSlider(title: String(localized: "Pegel \(track.title)"), value: Double(track.volume), range: 0...2,
                                    format: { $0.formatted(.percent.precision(.fractionLength(0))) },
-                                   editor: editor, actionName: "Spurlautstärke ändern") { timeline, value in
+                                   editor: editor, actionName: String(localized: "Spurlautstärke ändern")) { timeline, value in
                             timeline.updateTrack(track.id) { $0.volume = Float(value) }
                         }
                     }
@@ -255,7 +255,7 @@ private struct ClipInspector: View {
     private func fadeSlider(_ title: String, value: Double, apply: @escaping (inout Clip, RationalTime) -> Void) -> some View {
         let ids = Set(clips.map(\.id))
         return LiveSlider(title: title, value: value, range: 0...3, format: TimeFormatting.seconds,
-                          editor: editor, actionName: "\(title) ändern") { timeline, value in
+                          editor: editor, actionName: String(localized: "\(title) ändern")) { timeline, value in
             // Auf 1/100 s gerundet, damit die gespeicherten Werte glatt bleiben.
             let time = RationalTime(value: Int64((value * 100).rounded()), timescale: 100)
             timeline.updateClips(ids) { apply(&$0, min(time, $0.timelineDuration)) }
@@ -276,14 +276,14 @@ private struct TransitionInspector: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            InspectorSection(title: "Art") {
+            InspectorSection(title: String(localized: "Art")) {
                 KeyPicker(selection: Binding(get: { transition.kind }, set: { kind in
-                    editor.perform("Übergang ändern") { EditCommands.updateTransition(&$0, transition.id) { $0.kind = kind } }
+                    editor.perform(String(localized: "Übergang ändern")) { EditCommands.updateTransition(&$0, transition.id) { $0.kind = kind } }
                 }), options: Transition.Kind.allCases.map { ($0, $0.title) })
             }
-            InspectorSection(title: "Dauer") {
-                LiveSlider(title: "Länge", value: transition.duration.seconds, range: 0.1...3, format: TimeFormatting.seconds,
-                           editor: editor, actionName: "Übergangsdauer ändern") { timeline, value in
+            InspectorSection(title: String(localized: "Dauer")) {
+                LiveSlider(title: String(localized: "Länge"), value: transition.duration.seconds, range: 0.1...3, format: TimeFormatting.seconds,
+                           editor: editor, actionName: String(localized: "Übergangsdauer ändern")) { timeline, value in
                     let time = RationalTime(value: Int64((value * 100).rounded()), timescale: 100)
                     EditCommands.setTransitionDuration(&timeline, transition.id, to: time)
                 }
@@ -293,9 +293,9 @@ private struct TransitionInspector: View {
                         .foregroundStyle(Tape.inkSoft)
                 }
                 if let playedDuration, playedDuration < transition.duration {
-                    warning("Material nur für \(playedDuration.seconds.formatted(.number.precision(.fractionLength(2)))) s")
+                    warning(String(localized: "Material nur für \(playedDuration.seconds.formatted(.number.precision(.fractionLength(2)))) s"))
                 } else if playedDuration == nil {
-                    warning("Kein Material für den Übergang vorhanden")
+                    warning(String(localized: "Kein Material für den Übergang vorhanden"))
                 }
             }
             Button(role: .destructive) { editor.deleteSelection(ripple: false) } label: {
@@ -373,10 +373,10 @@ private struct ZoomInspector: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            InspectorSection(title: "Zoom") {
-                ValueRow(title: "Dauer", value: TimeFormatting.timecode(zoom.duration))
-                LiveSlider(title: "Vergrößerung", value: zoom.scale, range: ZoomRegion.scaleRange,
-                           format: TimelineCanvas.formatSpeed, editor: editor, actionName: "Zoom ändern") { timeline, value in
+            InspectorSection(title: String(localized: "Zoom")) {
+                ValueRow(title: String(localized: "Dauer"), value: TimeFormatting.timecode(zoom.duration))
+                LiveSlider(title: String(localized: "Vergrößerung"), value: zoom.scale, range: ZoomRegion.scaleRange,
+                           format: TimelineCanvas.formatSpeed, editor: editor, actionName: String(localized: "Zoom ändern")) { timeline, value in
                     ZoomCommands.update(&timeline, zoom.id) { $0.scale = (value * 20).rounded() / 20 }
                 }
                 if zoom.isAutomatic {
@@ -386,15 +386,15 @@ private struct ZoomInspector: View {
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }
-            InspectorSection(title: "Blickpunkt") {
+            InspectorSection(title: String(localized: "Blickpunkt")) {
                 KeyPicker(selection: Binding(get: { zoom.focus }, set: { focus in
-                    editor.updateZoom("Zoom ändern", zoom.id) { $0.focus = focus }
+                    editor.updateZoom(String(localized: "Zoom ändern"), zoom.id) { $0.focus = focus }
                 }), options: ZoomRegion.Focus.allCases.map { ($0, $0.title) })
                 if zoom.focus == .point {
                     FocusPad(point: CGPoint(x: zoom.pointX, y: zoom.pointY)) { point in
                         editor.liveChange { ZoomCommands.update(&$0, zoom.id) { $0.pointX = point.x; $0.pointY = point.y } }
                     } onEnd: {
-                        editor.endLiveChange("Blickpunkt ändern")
+                        editor.endLiveChange(String(localized: "Blickpunkt ändern"))
                     }
                     Text("Ins Feld klicken oder ziehen, um festzulegen, wohin gezoomt wird.")
                         .font(.tapeMono(11))
@@ -437,14 +437,14 @@ private struct AnnotationInspector: View {
             case .text(let note): textSection(note)
             case .shape(let mark): shapeSection(mark)
             }
-            InspectorSection(title: "Anzeige") {
-                LiveSlider(title: "Dauer", value: annotation.duration.seconds, range: Self.durationRange,
+            InspectorSection(title: String(localized: "Anzeige")) {
+                LiveSlider(title: String(localized: "Dauer"), value: annotation.duration.seconds, range: Self.durationRange,
                            format: { String(format: "%.1f s", $0) }, editor: editor,
-                           actionName: "Einblendungsdauer ändern") { timeline, value in
+                           actionName: String(localized: "Einblendungsdauer ändern")) { timeline, value in
                     AnnotationCommands.update(&timeline, annotation.id) { $0.duration = RationalTime(seconds: value) }
                 }
                 if editor.selectedPlacement == nil {
-                    hint("Die Stelle dieser Einblendung ist herausgeschnitten, deshalb erscheint sie nicht im Video.")
+                    hint(String(localized: "Die Stelle dieser Einblendung ist herausgeschnitten, deshalb erscheint sie nicht im Video."))
                 }
             }
             Button(role: .destructive) { editor.deleteSelection(ripple: false) } label: {
@@ -472,41 +472,41 @@ private struct AnnotationInspector: View {
 
     private func keysSection(_ group: KeyGroup) -> some View {
         Group {
-            InspectorSection(title: "Eingabe") {
+            InspectorSection(title: String(localized: "Eingabe")) {
                 TextField("Tasten", text: $draft)
                     .textFieldStyle(PaperFieldStyle())
                     .focused($focus, equals: .content)
                     .onSubmit { commitDraft() }
                 if group.isHidden {
-                    hint("Ausgeblendet: Diese Eingabe erscheint nicht im Video. Ein neuer Text zeigt sie wieder.")
+                    hint(String(localized: "Ausgeblendet: Diese Eingabe erscheint nicht im Video. Ein neuer Text zeigt sie wieder."))
                 }
                 Button { editor.splitSelectedKeys() } label: {
                     Label("Am Playhead teilen", systemImage: "scissors").frame(maxWidth: .infinity)
                 }
                 .help("Trennt die Gruppe, damit sich nur ein Teil maskieren lässt")
             }
-            InspectorSection(title: "Passwort schützen") {
+            InspectorSection(title: String(localized: "Passwort schützen")) {
                 TextField("Maske", text: $mask)
                     .textFieldStyle(PaperFieldStyle())
                     .focused($focus, equals: .mask)
                 HStack(spacing: 8) {
                     Button {
                         let mask = mask
-                        editor.perform("Eingabe maskieren") { AnnotationCommands.mask(&$0, annotation.id, with: mask) }
+                        editor.perform(String(localized: "Eingabe maskieren")) { AnnotationCommands.mask(&$0, annotation.id, with: mask) }
                         draft = mask
                     } label: {
                         Text("Maskieren").frame(maxWidth: .infinity)
                     }
                     .disabled(mask.isEmpty)
                     Button {
-                        editor.perform("Eingabe ausblenden") { AnnotationCommands.hide(&$0, annotation.id) }
+                        editor.perform(String(localized: "Eingabe ausblenden")) { AnnotationCommands.hide(&$0, annotation.id) }
                         draft = KeyGroup.hiddenSymbol
                     } label: {
                         Text("Ausblenden").frame(maxWidth: .infinity)
                     }
                     .disabled(group.isHidden)
                 }
-                hint("Das Original wird überschrieben. Nach dem Speichern und Schließen lässt es sich nicht zurückholen.")
+                hint(String(localized: "Das Original wird überschrieben. Nach dem Speichern und Schließen lässt es sich nicht zurückholen."))
             }
         }
     }
@@ -514,7 +514,7 @@ private struct AnnotationInspector: View {
     // MARK: Text
 
     private func textSection(_ note: TextNote) -> some View {
-        InspectorSection(title: "Text") {
+        InspectorSection(title: String(localized: "Text")) {
             TextEditor(text: $draft)
                 .font(.tapeMono(12))
                 .foregroundStyle(Tape.ink)
@@ -535,12 +535,12 @@ private struct AnnotationInspector: View {
                 }
             }))
             .toggleStyle(.tapeSwitch)
-            hint("In der Vorschau am Griff verschieben.")
+            hint(String(localized: "In der Vorschau am Griff verschieben."))
         }
     }
 
     private func updateText(_ change: (inout TextNote) -> Void) {
-        editor.perform("Text ändern") { timeline in
+        editor.perform(String(localized: "Text ändern")) { timeline in
             AnnotationCommands.update(&timeline, annotation.id) { annotation in
                 guard case .text(var note) = annotation.content else { return }
                 change(&note)
@@ -552,7 +552,7 @@ private struct AnnotationInspector: View {
     // MARK: Symbol
 
     private func shapeSection(_ mark: ShapeMark) -> some View {
-        InspectorSection(title: "Symbol") {
+        InspectorSection(title: String(localized: "Symbol")) {
             KeyPicker(selection: Binding(get: { mark.kind }, set: { kind in
                 updateShape { $0.kind = kind }
             }), options: ShapeMark.Kind.allCases.map { ($0, $0.title) }, columns: 2)
@@ -561,7 +561,7 @@ private struct AnnotationInspector: View {
                 Stepper(value: Binding(get: { mark.number }, set: { number in
                     updateShape { $0.number = number }
                 }), in: 1...99) {
-                    ValueRow(title: "Zahl", value: "\(mark.number)")
+                    ValueRow(title: String(localized: "Zahl"), value: "\(mark.number)")
                 }
             }
             Toggle("Mitzoomen", isOn: Binding(get: { mark.followsZoom }, set: { isOn in
@@ -572,12 +572,12 @@ private struct AnnotationInspector: View {
                 }
             }))
             .toggleStyle(.tapeSwitch)
-            hint("In der Vorschau an den Griffen setzen. Mit „Mitzoomen“ bleibt das Symbol beim Zoomen auf derselben Bildstelle.")
+            hint(String(localized: "In der Vorschau an den Griffen setzen. Mit „Mitzoomen“ bleibt das Symbol beim Zoomen auf derselben Bildstelle."))
         }
     }
 
     private func updateShape(_ change: (inout ShapeMark) -> Void) {
-        editor.perform("Symbol ändern") { timeline in
+        editor.perform(String(localized: "Symbol ändern")) { timeline in
             AnnotationCommands.update(&timeline, annotation.id) { annotation in
                 guard case .shape(var mark) = annotation.content else { return }
                 change(&mark)
@@ -624,7 +624,7 @@ private struct AnnotationInspector: View {
         guard text != initialDraft else { return }
         switch annotation.content {
         case .keys:
-            editor.perform("Tasten ändern") { AnnotationCommands.setKeys(&$0, annotation.id, text: text) }
+            editor.perform(String(localized: "Tasten ändern")) { AnnotationCommands.setKeys(&$0, annotation.id, text: text) }
         case .text:
             updateText { $0.text = text }
         case .shape:
@@ -687,13 +687,13 @@ private struct LookInspector: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            InspectorSection(title: "Format") {
-                KeyPicker(selection: lookBinding(\.aspect, "Format ändern"),
+            InspectorSection(title: String(localized: "Format")) {
+                KeyPicker(selection: lookBinding(\.aspect, String(localized: "Format ändern")),
                           options: Look.Aspect.allCases.map { ($0, $0.title) })
             }
 
-            InspectorSection(title: "Hintergrund") {
-                KeyPicker(selection: lookBinding(\.background.kind, "Hintergrund ändern"),
+            InspectorSection(title: String(localized: "Hintergrund")) {
+                KeyPicker(selection: lookBinding(\.background.kind, String(localized: "Hintergrund ändern")),
                           options: Background.Kind.allCases.map { ($0, $0.title) })
                 switch look.background.kind {
                 case .none:
@@ -705,7 +705,7 @@ private struct LookInspector: View {
                     LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 6), count: 6), spacing: 6) {
                         ForEach(Background.Gradient.presets, id: \.self) { gradient in
                             Button {
-                                editor.performLook("Verlauf ändern") { $0.background.gradient = gradient }
+                                editor.performLook(String(localized: "Verlauf ändern")) { $0.background.gradient = gradient }
                             } label: {
                                 RoundedRectangle(cornerRadius: 5)
                                     .fill(LinearGradient(colors: [Color(gradient.from), Color(gradient.to)],
@@ -722,7 +722,7 @@ private struct LookInspector: View {
                     }
                 case .image:
                     HStack {
-                        Text(look.background.imagePath.map { ($0 as NSString).lastPathComponent } ?? "Kein Bild")
+                        Text(look.background.imagePath.map { ($0 as NSString).lastPathComponent } ?? String(localized: "Kein Bild"))
                             .font(.tapeMono(11))
                             .foregroundStyle(Tape.inkSoft)
                             .lineLimit(1)
@@ -735,56 +735,56 @@ private struct LookInspector: View {
                         Text(importError).font(.tapeMono(11)).foregroundStyle(Tape.orangeInk)
                     }
                 }
-                LiveSlider(title: "Abstand", value: look.padding, range: Look.paddingRange, format: Self.percent,
-                           editor: editor, actionName: "Abstand ändern", look: { $0.padding = ($1 * 200).rounded() / 200 })
-                LiveSlider(title: "Ecken", value: look.cornerRadius, range: Look.cornerRadiusRange,
+                LiveSlider(title: String(localized: "Abstand"), value: look.padding, range: Look.paddingRange, format: Self.percent,
+                           editor: editor, actionName: String(localized: "Abstand ändern"), look: { $0.padding = ($1 * 200).rounded() / 200 })
+                LiveSlider(title: String(localized: "Ecken"), value: look.cornerRadius, range: Look.cornerRadiusRange,
                            format: { ($0 * 1000).formatted(.number.precision(.fractionLength(0))) },
-                           editor: editor, actionName: "Ecken ändern", look: { $0.cornerRadius = ($1 * 1000).rounded() / 1000 })
-                LiveSlider(title: "Schatten", value: look.shadow, range: 0...1, format: Self.percent,
-                           editor: editor, actionName: "Schatten ändern", look: { $0.shadow = ($1 * 100).rounded() / 100 })
+                           editor: editor, actionName: String(localized: "Ecken ändern"), look: { $0.cornerRadius = ($1 * 1000).rounded() / 1000 })
+                LiveSlider(title: String(localized: "Schatten"), value: look.shadow, range: 0...1, format: Self.percent,
+                           editor: editor, actionName: String(localized: "Schatten ändern"), look: { $0.shadow = ($1 * 100).rounded() / 100 })
             }
 
-            InspectorSection(title: "Cursor") {
-                Toggle("Cursor zeichnen", isOn: lookBinding(\.cursor.isVisible, "Cursor ein- oder ausblenden"))
+            InspectorSection(title: String(localized: "Cursor")) {
+                Toggle("Cursor zeichnen", isOn: lookBinding(\.cursor.isVisible, String(localized: "Cursor ein- oder ausblenden")))
                     .disabled(!hasCursorData)
                 if !hasCursorData {
-                    note("Für diese Aufnahme gibt es keine Cursor-Daten.")
+                    note(String(localized: "Für diese Aufnahme gibt es keine Cursor-Daten."))
                 } else if look.cursor.isVisible {
-                    LiveSlider(title: "Größe", value: look.cursor.scale, range: CursorStyle.scaleRange,
-                               format: TimelineCanvas.formatSpeed, editor: editor, actionName: "Cursorgröße ändern",
+                    LiveSlider(title: String(localized: "Größe"), value: look.cursor.scale, range: CursorStyle.scaleRange,
+                               format: TimelineCanvas.formatSpeed, editor: editor, actionName: String(localized: "Cursorgröße ändern"),
                                look: { $0.cursor.scale = ($1 * 10).rounded() / 10 })
-                    LiveSlider(title: "Glättung", value: look.cursor.smoothing, range: 0...1, format: Self.percent,
-                               editor: editor, actionName: "Glättung ändern",
+                    LiveSlider(title: String(localized: "Glättung"), value: look.cursor.smoothing, range: 0...1, format: Self.percent,
+                               editor: editor, actionName: String(localized: "Glättung ändern"),
                                look: { $0.cursor.smoothing = ($1 * 20).rounded() / 20 })
-                    Toggle("Klicks zeigen", isOn: lookBinding(\.cursor.highlightsClicks, "Klicks ein- oder ausblenden"))
+                    Toggle("Klicks zeigen", isOn: lookBinding(\.cursor.highlightsClicks, String(localized: "Klicks ein- oder ausblenden")))
                 }
             }
 
             if hasCamera {
-                InspectorSection(title: "Kamera") {
-                    KeyPicker(selection: lookBinding(\.camera.corner, "Kameraposition ändern"),
+                InspectorSection(title: String(localized: "Kamera")) {
+                    KeyPicker(selection: lookBinding(\.camera.corner, String(localized: "Kameraposition ändern")),
                               options: CameraStyle.Corner.allCases.map { ($0, $0.title) }, columns: 2)
-                    KeyPicker(selection: lookBinding(\.camera.shape, "Kameraform ändern"),
+                    KeyPicker(selection: lookBinding(\.camera.shape, String(localized: "Kameraform ändern")),
                               options: CameraStyle.Shape.allCases.map { ($0, $0.title) })
-                    LiveSlider(title: "Größe", value: look.camera.size, range: CameraStyle.sizeRange, format: Self.percent,
-                               editor: editor, actionName: "Kameragröße ändern",
+                    LiveSlider(title: String(localized: "Größe"), value: look.camera.size, range: CameraStyle.sizeRange, format: Self.percent,
+                               editor: editor, actionName: String(localized: "Kameragröße ändern"),
                                look: { $0.camera.size = ($1 * 100).rounded() / 100 })
-                    note("Ausblenden über das Auge an der Spur „Kamera“.")
+                    note(String(localized: "Ausblenden über das Auge an der Spur „Kamera“."))
                 }
             }
 
-            InspectorSection(title: "Einblendungen") {
-                Toggle("Tasten zeigen", isOn: lookBinding(\.showsKeystrokes, "Tasten ein- oder ausblenden"))
+            InspectorSection(title: String(localized: "Einblendungen")) {
+                Toggle("Tasten zeigen", isOn: lookBinding(\.showsKeystrokes, String(localized: "Tasten ein- oder ausblenden")))
                 if look.showsKeystrokes, !editor.hasKeystrokes {
-                    note("In dieser Aufnahme wurden keine Tasten aufgezeichnet.")
+                    note(String(localized: "In dieser Aufnahme wurden keine Tasten aufgezeichnet."))
                 }
             }
 
             HStack(spacing: 8) {
-                Button { editor.performLook("Standard-Gestaltung") { $0 = Self.standardLook(keeping: $0) } } label: {
+                Button { editor.performLook(String(localized: "Standard-Gestaltung")) { $0 = Self.standardLook(keeping: $0) } } label: {
                     Text("Standard").frame(maxWidth: .infinity)
                 }
-                Button { editor.performLook("Ohne Gestaltung") { $0 = Self.neutralLook(keeping: $0) } } label: {
+                Button { editor.performLook(String(localized: "Ohne Gestaltung")) { $0 = Self.neutralLook(keeping: $0) } } label: {
                     Text("Schlicht").frame(maxWidth: .infinity)
                 }
             }
@@ -833,7 +833,7 @@ private struct LookInspector: View {
             colorCommit?.cancel()
             colorCommit = Task {
                 try? await Task.sleep(for: .milliseconds(600))
-                if !Task.isCancelled { editor.endLiveChange("Hintergrundfarbe ändern") }
+                if !Task.isCancelled { editor.endLiveChange(String(localized: "Hintergrundfarbe ändern")) }
             }
         })
     }
@@ -842,16 +842,16 @@ private struct LookInspector: View {
         guard let packageURL = editor.packageURL else { return }
         let panel = NSOpenPanel()
         panel.allowedContentTypes = [.image]
-        panel.prompt = "Verwenden"
+        panel.prompt = String(localized: "Verwenden")
         guard panel.runModal() == .OK, let url = panel.url else { return }
         do {
             let data = try Data(contentsOf: url)
             let name = "background-\(UUID().uuidString.prefix(8)).\(url.pathExtension.isEmpty ? "png" : url.pathExtension)"
             let path = try document.addFile(data, named: name, toPackageAt: packageURL)
             importError = nil
-            editor.performLook("Hintergrundbild wählen") { $0.background.imagePath = path }
+            editor.performLook(String(localized: "Hintergrundbild wählen")) { $0.background.imagePath = path }
         } catch {
-            importError = "Das Bild konnte nicht übernommen werden: \(error.localizedDescription)"
+            importError = String(localized: "Das Bild konnte nicht übernommen werden: \(error.localizedDescription)")
         }
     }
 }

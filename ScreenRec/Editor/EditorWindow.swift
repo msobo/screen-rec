@@ -13,7 +13,7 @@ struct EditorView: View {
 
     var body: some View {
         VStack(spacing: 12) {
-            EditorHeader(title: fileURL?.deletingPathExtension().lastPathComponent ?? "Unbenannt",
+            EditorHeader(title: fileURL?.deletingPathExtension().lastPathComponent ?? String(localized: "Unbenannt"),
                          duration: document.project.timeline.duration, playback: playback, exporter: exporter,
                          fileURL: fileURL, undoManager: undoManager)
             HStack(alignment: .top, spacing: 14) {
@@ -97,7 +97,7 @@ struct EditorView: View {
     }
 }
 
-/// Kopfleiste: Finder, LCD mit Projektname, Rückgängig/Wiederholen und Export.
+/// Kopfleiste: Finder, Info, LCD mit Projektname, Rückgängig/Wiederholen und Export.
 private struct EditorHeader: View {
     let title: String
     let duration: RationalTime
@@ -117,6 +117,7 @@ private struct EditorHeader: View {
             }
             .help("Im Finder zeigen")
             .disabled(fileURL == nil)
+            AboutButton()
 
             Spacer(minLength: 12)
             nameplate
@@ -124,10 +125,10 @@ private struct EditorHeader: View {
 
             HStack(spacing: 6) {
                 Button { undoManager?.undo() } label: { Image(systemName: "arrow.uturn.backward") }
-                    .help(undoManager?.undoMenuItemTitle ?? "Rückgängig")
+                    .help(undoManager?.undoMenuItemTitle ?? String(localized: "Rückgängig"))
                     .disabled(undoManager?.canUndo != true)
                 Button { undoManager?.redo() } label: { Image(systemName: "arrow.uturn.forward") }
-                    .help(undoManager?.redoMenuItemTitle ?? "Wiederholen")
+                    .help(undoManager?.redoMenuItemTitle ?? String(localized: "Wiederholen"))
                     .disabled(undoManager?.canRedo != true)
             }
             if let exporter {
@@ -277,7 +278,7 @@ private struct MonitorView: View {
         defer { lastRate = rate }
         guard let rate, let lastRate, lastRate != rate else { return }
         osd = switch rate {
-        case 0: ("pause.fill", "PAUSE")
+        case 0: ("pause.fill", String(localized: "PAUSE"))
         case 1: ("play.fill", "PLAY")
         case let rate where rate > 1: ("forward.fill", "\(Int(rate))×")
         default: ("backward.fill", "\(Int(-rate))×")
@@ -316,11 +317,11 @@ private struct TransportDeck: View {
             counter(TimeFormatting.timecode(playback.currentTime), color: Tape.phosphor)
                 .phosphorGlow()
             HStack(spacing: 0) {
-                transportKey("backward.end.fill", help: "Zum Anfang (Pos1)", width: 48) { playback.seek(to: .zero) }
+                transportKey("backward.end.fill", help: String(localized: "Zum Anfang (Pos1)"), width: 48) { playback.seek(to: .zero) }
                 transportKey(playback.isPlaying ? "pause.fill" : "play.fill",
-                             help: playback.isPlaying ? "Pause (Leertaste)" : "Wiedergabe (Leertaste)", width: 62,
+                             help: playback.isPlaying ? String(localized: "Pause (Leertaste)") : String(localized: "Wiedergabe (Leertaste)"), width: 62,
                              isOn: playback.isPlaying) { playback.togglePlayback() }
-                transportKey("forward.end.fill", help: "Zum Ende (Ende)", width: 48) { playback.seek(to: playback.duration) }
+                transportKey("forward.end.fill", help: String(localized: "Zum Ende (Ende)"), width: 48) { playback.seek(to: playback.duration) }
             }
             .padding(.horizontal, 4)
             .padding(.top, 4)
@@ -587,21 +588,21 @@ private struct TrackHeaders: View {
             }
             .padding(.horizontal, 10)
             .frame(height: TimelineMetrics.zoomLaneHeight)
-            laneHeader("Tasten", color: Tape.yellow, height: TimelineMetrics.keyLaneHeight)
-            laneHeader("Notizen", color: Tape.purple, height: TimelineMetrics.noteLaneHeight)
+            laneHeader(String(localized: "Tasten"), color: Tape.yellow, height: TimelineMetrics.keyLaneHeight)
+            laneHeader(String(localized: "Notizen"), color: Tape.purple, height: TimelineMetrics.noteLaneHeight)
             ForEach(Array(tracks.enumerated()), id: \.element.id) { index, track in
                 HStack(spacing: 8) {
                     RoundedRectangle(cornerRadius: 2)
                         .fill(track.kind == .video ? Tape.orange : Tape.phosphor)
                         .frame(width: 10, height: 10)
-                    Text(track.name)
+                    Text(track.title)
                         .caseLabel(11, color: Tape.cream)
                         .lineLimit(1)
                         .truncationMode(.middle)
-                        .help(track.name)
+                        .help(track.title)
                     Spacer(minLength: 4)
                     Button {
-                        editor.perform(track.isMuted ? "Stummschaltung aufheben" : "Stummschalten") { timeline in
+                        editor.perform(track.isMuted ? String(localized: "Stummschaltung aufheben") : String(localized: "Stummschalten")) { timeline in
                             timeline.updateTrack(track.id) { $0.isMuted.toggle() }
                         }
                     } label: {
@@ -613,7 +614,7 @@ private struct TrackHeaders: View {
                             .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
-                    .help(track.kind == .video ? "Spur ausblenden" : "Spur stummschalten")
+                    .help(track.kind == .video ? String(localized: "Spur ausblenden") : String(localized: "Spur stummschalten"))
                 }
                 .padding(.horizontal, 10)
                 .frame(height: TimelineMetrics.rowHeight(for: track.kind))
@@ -660,7 +661,7 @@ struct PlaybackCommands: Commands {
 
     var body: some Commands {
         CommandMenu("Wiedergabe") {
-            Button(playback?.isPlaying == true ? "Pause" : "Wiedergabe") { playback?.togglePlayback() }
+            Button(playback?.isPlaying == true ? String(localized: "Pause") : String(localized: "Wiedergabe")) { playback?.togglePlayback() }
                 .keyboardShortcut(.space, modifiers: [])
                 .disabled(isTyping)
             Divider()
@@ -762,7 +763,7 @@ struct TimelineCommands: Commands {
             Button("Auswahl aufheben") { editor?.deselectAll() }
                 .keyboardShortcut("a", modifiers: [.command, .shift])
                 .disabled(editor == nil)
-            Button(editor?.isSnappingEnabled == false ? "Einrasten einschalten" : "Einrasten ausschalten") {
+            Button(editor?.isSnappingEnabled == false ? String(localized: "Einrasten einschalten") : String(localized: "Einrasten ausschalten")) {
                 editor?.isSnappingEnabled.toggle()
             }
             .keyboardShortcut("n", modifiers: [])

@@ -12,10 +12,10 @@ enum SchemaMigration {
 
         var errorDescription: String? {
             switch self {
-            case .notAProject: "Die Datei ist kein ScreenRec-Projekt."
+            case .notAProject: String(localized: "Die Datei ist kein ScreenRec-Projekt.")
             case .newerVersion(let version):
-                "Das Projekt wurde mit einer neueren ScreenRec-Version erstellt (Schema \(version))."
-            case .missingStep(let version): "Für Schema-Version \(version) fehlt eine Migration."
+                String(localized: "Das Projekt wurde mit einer neueren ScreenRec-Version erstellt (Schema \(version)).")
+            case .missingStep(let version): String(localized: "Für Schema-Version \(version) fehlt eine Migration.")
             }
         }
     }

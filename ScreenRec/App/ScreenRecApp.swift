@@ -7,6 +7,7 @@ struct ScreenRecApp: App {
     @State private var appState: AppState
 
     init() {
+        AppLanguage.applySelection()
         TapeFont.register()
         let appState = AppState()
         _appState = State(initialValue: appState)
@@ -35,11 +36,22 @@ struct ScreenRecApp: App {
         .defaultLaunchBehavior(.presented)
         .restorationBehavior(.disabled)
 
+        Window("Über ScreenRec", id: AboutView.windowID) {
+            AboutView()
+        }
+        .windowResizability(.contentSize)
+        .windowStyle(.hiddenTitleBar)
+        .windowBackgroundDragBehavior(.enabled)
+        .defaultLaunchBehavior(.suppressed)
+        .restorationBehavior(.disabled)
+        .commandsRemoved()
+
         DocumentGroup(newDocument: { ProjectDocument() }) { file in
             EditorView(document: file.document, fileURL: file.fileURL)
         }
         .windowStyle(.hiddenTitleBar)
         .commands {
+            AboutCommands()
             PlaybackCommands()
             TimelineCommands()
             ExportCommands()
@@ -52,6 +64,7 @@ struct ScreenRecApp: App {
 
         Settings {
             SettingsView()
+                .environment(appState)
         }
     }
 }
@@ -68,11 +81,11 @@ extension AppState {
 
     var primaryActionTitle: String {
         switch phase {
-        case .idle: "Aufnahme starten"
-        case .selectingSource: "Quelle wählen …"
-        case .countdown: "Countdown abbrechen"
-        case .recording, .paused: "Aufnahme stoppen"
-        case .finishing: "Wird gespeichert …"
+        case .idle: String(localized: "Aufnahme starten")
+        case .selectingSource: String(localized: "Quelle wählen …")
+        case .countdown: String(localized: "Countdown abbrechen")
+        case .recording, .paused: String(localized: "Aufnahme stoppen")
+        case .finishing: String(localized: "Wird gespeichert …")
         }
     }
 }
@@ -107,7 +120,7 @@ private struct MenuBarContent: View {
             .disabled(appState.phase == .selectingSource || appState.phase == .finishing)
 
         if appState.isRecording {
-            Button(appState.phase == .paused ? "Fortsetzen" : "Pausieren") { appState.togglePause() }
+            Button(appState.phase == .paused ? String(localized: "Fortsetzen") : String(localized: "Pausieren")) { appState.togglePause() }
                 .globalKeyboardShortcut(.togglePause)
         }
 
@@ -122,6 +135,10 @@ private struct MenuBarContent: View {
         }
         SettingsLink { Text("Einstellungen …") }
             .keyboardShortcut(",")
+        Button("Über ScreenRec") {
+            openWindow(id: AboutView.windowID)
+            NSApplication.shared.activate()
+        }
         Divider()
         Button("Beenden") { NSApplication.shared.terminate(nil) }
             .keyboardShortcut("q")

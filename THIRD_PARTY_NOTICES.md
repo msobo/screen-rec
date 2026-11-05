@@ -1,6 +1,6 @@
-# Hinweise zu Drittanbieter-Komponenten
+# Third-Party Notices
 
-ScreenRec selbst steht unter der GPL-3.0 (siehe `LICENSE`). Die folgenden Komponenten behalten ihre eigenen Lizenzen.
+ScreenRec itself is licensed under the GPL-3.0 (see `LICENSE`). The following components keep their own licenses.
 
 ## KeyboardShortcuts
 
@@ -19,9 +19,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ```
 
-## Schriften
+## Fonts
 
-Die Schriften Bungee und VT323 stehen unter der SIL Open Font License 1.1. Die vollständigen Lizenztexte liegen neben den Schriftdateien in `ScreenRec/Resources/Fonts/` und werden mit der App ausgeliefert.
+The fonts Bungee and VT323 are licensed under the SIL Open Font License 1.1. The full license texts are next to the font files in `ScreenRec/Resources/Fonts/` and ship with the app.
 
 - Bungee: Copyright 2023 The Bungee Project Authors (https://github.com/djrrb/Bungee)
 - VT323: Copyright 2011, The VT323 Project Authors

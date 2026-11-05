@@ -61,9 +61,12 @@ enum RecordingStorage {
     static func makeRecordingPackage(date: Date = .now) throws -> (package: URL, media: URL) {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "de_DE")
-        formatter.dateFormat = "yyyy-MM-dd 'um' HH.mm.ss"
-        let package = baseDirectory.appending(path: "Aufnahme \(formatter.string(from: date)).\(packageExtension)",
-                                              directoryHint: .isDirectory)
+        formatter.dateFormat = "yyyy-MM-dd"
+        let day = formatter.string(from: date)
+        formatter.dateFormat = "HH.mm.ss"
+        let time = formatter.string(from: date)
+        let name = String(localized: "Aufnahme \(day) um \(time)")
+        let package = baseDirectory.appending(path: "\(name).\(packageExtension)", directoryHint: .isDirectory)
         let media = package.appending(path: "media", directoryHint: .isDirectory)
         try FileManager.default.createDirectory(at: media, withIntermediateDirectories: true)
         return (package, media)

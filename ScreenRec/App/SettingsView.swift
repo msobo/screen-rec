@@ -14,6 +14,8 @@ struct SettingsView: View {
     @AppStorage(Key.captureCamera) private var captureCamera = false
     @AppStorage(Key.cameraID) private var cameraID = ""
     @AppStorage(Key.keystrokeMode) private var keystrokeMode = RecordingOptions.KeystrokeMode.shortcuts
+    @AppStorage(AppLanguage.key) private var language = AppLanguage.english
+    @Environment(AppState.self) private var appState
 
     @State private var microphones: [AVCaptureDevice] = []
     @State private var cameras: [AVCaptureDevice] = []
@@ -21,17 +23,30 @@ struct SettingsView: View {
 
     private var keystrokeHint: String {
         if keystrokeMode != .off, !hasKeystrokePermission {
-            return "ScreenRec braucht dafür die Freigabe unter Systemeinstellungen > Datenschutz & Sicherheit > Bedienungshilfen."
+            return String(localized: "ScreenRec braucht dafür die Freigabe unter Systemeinstellungen > Datenschutz & Sicherheit > Bedienungshilfen.")
         }
         return switch keystrokeMode {
-        case .off: "Es werden keine Tastenanschläge aufgezeichnet."
-        case .shortcuts: "Nur Kürzel mit ⌘, ⌃ oder ⌥ und einige Sondertasten, nie getippter Text."
-        case .all: "Auch getippter Text, also womöglich Passwörter. Im Editor lassen sich Eingaben maskieren oder ausblenden."
+        case .off: String(localized: "Es werden keine Tastenanschläge aufgezeichnet.")
+        case .shortcuts: String(localized: "Nur Kürzel mit ⌘, ⌃ oder ⌥ und einige Sondertasten, nie getippter Text.")
+        case .all: String(localized: "Auch getippter Text, also womöglich Passwörter. Im Editor lassen sich Eingaben maskieren oder ausblenden.")
         }
     }
 
     var body: some View {
         Form {
+            Section("Sprache") {
+                Picker("Sprache", selection: $language) {
+                    ForEach(AppLanguage.allCases) { Text(verbatim: $0.title).tag($0) }
+                }
+                if language != AppLanguage.active {
+                    Text("Die neue Sprache gilt nach einem Neustart von ScreenRec.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Button("Jetzt neu starten") { AppLanguage.relaunch() }
+                        .disabled(appState.phase != .idle)
+                }
+            }
+
             Section("Ton") {
                 Toggle("Systemton aufnehmen", isOn: $captureSystemAudio)
                 Toggle("Mikrofon aufnehmen", isOn: $captureMicrophone)

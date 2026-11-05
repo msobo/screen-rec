@@ -16,8 +16,8 @@ struct ExportSettings: Codable, Equatable, Sendable {
         var title: String {
             switch self {
             case .youTube: "YouTube"
-            case .original: "Original"
-            case .proRes: "ProRes (Archiv)"
+            case .original: String(localized: "Original")
+            case .proRes: String(localized: "ProRes (Archiv)")
             case .gif: "GIF"
             }
         }
@@ -151,9 +151,9 @@ struct ExportFormat: Equatable, Sendable {
         case .gif: "GIF"
         }
         if videoCodec == .gif {
-            return "\(Int(renderSize.width)) × \(Int(renderSize.height)), \(frameRate) fps, \(codec) · ohne Ton"
+            return String(localized: "\(Int(renderSize.width)) × \(Int(renderSize.height)), \(frameRate) fps, \(codec) · ohne Ton")
         }
-        let audio = videoCodec == .proRes422 ? "PCM 24 Bit" : "AAC \(audioBitRate / 1000) kbit/s"
+        let audio = videoCodec == .proRes422 ? String(localized: "PCM 24 Bit") : "AAC \(audioBitRate / 1000) kbit/s"
         let bitRate = videoCodec == .proRes422 ? "" : ", \(videoBitRate / 1_000_000) Mbit/s"
         return "\(Int(renderSize.width)) × \(Int(renderSize.height)), \(frameRate) fps, \(codec)\(bitRate) · \(audio)"
     }

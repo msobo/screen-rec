@@ -103,7 +103,7 @@ struct AnnotationOverlayView: View {
         let points = dragged
         dragged = [:]
         guard !points.isEmpty else { return }
-        editor.perform("Einblendung verschieben") { timeline in
+        editor.perform(String(localized: "Einblendung verschieben")) { timeline in
             AnnotationCommands.update(&timeline, annotation.id) { annotation in
                 switch annotation.content {
                 case .keys: break

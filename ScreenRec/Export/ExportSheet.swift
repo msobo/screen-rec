@@ -29,36 +29,36 @@ struct ExportSheet: View {
             HStack {
                 Text("Export").font(.tapeDisplay(18)).foregroundStyle(Tape.ink)
                 Spacer()
-                ModuleTag(text: "AUSGANG")
+                ModuleTag(text: String(localized: "AUSGANG"))
             }
 
-            row("Voreinstellung") {
+            row(String(localized: "Voreinstellung")) {
                 KeyPicker(selection: $settings.preset, options: ExportSettings.Preset.allCases.map { ($0, $0.title) })
             }
             if settings.preset == .youTube {
-                row("Auflösung") {
+                row(String(localized: "Auflösung")) {
                     KeyPicker(selection: $settings.resolution,
                               options: ExportSettings.Resolution.allCases.map { ($0, $0.title) })
                 }
-                row("Bildrate") {
+                row(String(localized: "Bildrate")) {
                     KeyPicker(selection: $settings.frameRate, options: ExportSettings.frameRates.map { ($0, "\($0) fps") })
                 }
             }
             if settings.preset == .gif {
-                row("Größe") {
+                row(String(localized: "Größe")) {
                     KeyPicker(selection: $settings.gifSize, options: ExportSettings.gifSizes.map { ($0, "\($0) px") })
                 }
-                row("Bildrate") {
+                row(String(localized: "Bildrate")) {
                     KeyPicker(selection: $settings.gifFrameRate,
                               options: ExportSettings.gifFrameRates.map { ($0, "\($0) fps") })
                 }
             }
             if settings.preset == .youTube || settings.preset == .original {
-                row("Codec") {
+                row(String(localized: "Codec")) {
                     KeyPicker(selection: $settings.codec, options: ExportSettings.Codec.allCases.map { ($0, $0.title) })
                 }
             }
-            row("Ziel") {
+            row(String(localized: "Ziel")) {
                 HStack {
                     Text(settings.directoryURL.path(percentEncoded: false))
                         .font(.tapeMono(11))
@@ -70,7 +70,7 @@ struct ExportSheet: View {
                         .buttonStyle(.key)
                 }
             }
-            row("Dateiname") {
+            row(String(localized: "Dateiname")) {
                 HStack(spacing: 6) {
                     TextField("Dateiname", text: $fileName)
                         .textFieldStyle(PaperFieldStyle())
@@ -81,9 +81,9 @@ struct ExportSheet: View {
             }
 
             Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 0) {
-                summaryRow("Ausgabe", format.summary)
-                summaryRow("Dauer", TimeFormatting.timecode(duration))
-                summaryRow("Größe", "≈ " + ByteCountFormatter.string(fromByteCount: format.estimatedFileSize(duration: duration),
+                summaryRow(String(localized: "Ausgabe"), format.summary)
+                summaryRow(String(localized: "Dauer"), TimeFormatting.timecode(duration))
+                summaryRow(String(localized: "Größe"), "≈ " + ByteCountFormatter.string(fromByteCount: format.estimatedFileSize(duration: duration),
                                                                       countStyle: .file))
             }
             .padding(.horizontal, 14)
@@ -138,16 +138,16 @@ struct ExportSheet: View {
 
     private var note: String? {
         switch settings.preset {
-        case .youTube: "MP4 mit Moov-Atom am Anfang, Bitrate nach YouTube-Empfehlung, Ton AAC 48 kHz Stereo."
+        case .youTube: String(localized: "MP4 mit Moov-Atom am Anfang, Bitrate nach YouTube-Empfehlung, Ton AAC 48 kHz Stereo.")
         case .original:
             settings.codec == .h264 && format.renderSize != ExportFormat.even(built?.videoComposition?.renderSize ?? .zero)
-                ? "H.264 kann diese Auflösung nicht kodieren; das Bild wird auf 4096 × 2304 verkleinert."
+                ? String(localized: "H.264 kann diese Auflösung nicht kodieren; das Bild wird auf 4096 × 2304 verkleinert.")
                 : nil
-        case .proRes: "Sehr große Dateien, verlustarm, gut zum Archivieren oder Weiterbearbeiten."
+        case .proRes: String(localized: "Sehr große Dateien, verlustarm, gut zum Archivieren oder Weiterbearbeiten.")
         case .gif:
             duration.seconds > 60
-                ? "GIFs werden bei langen Aufnahmen sehr groß. Für mehr als eine Minute besser einen Abschnitt exportieren oder MP4 wählen."
-                : "Ohne Ton, endlos wiederholt. Die Größe ist grob geschätzt und hängt stark vom Bildinhalt ab."
+                ? String(localized: "GIFs werden bei langen Aufnahmen sehr groß. Für mehr als eine Minute besser einen Abschnitt exportieren oder MP4 wählen.")
+                : String(localized: "Ohne Ton, endlos wiederholt. Die Größe ist grob geschätzt und hängt stark vom Bildinhalt ab.")
         }
     }
 
@@ -157,14 +157,14 @@ struct ExportSheet: View {
         panel.canChooseFiles = false
         panel.canCreateDirectories = true
         panel.directoryURL = settings.directoryURL
-        panel.prompt = "Auswählen"
+        panel.prompt = String(localized: "Auswählen")
         guard panel.runModal() == .OK, let url = panel.url else { return }
         settings.directoryPath = url.path(percentEncoded: false)
     }
 
     private func export() {
         if settings != document.project.exportSettings {
-            document.update("Exporteinstellungen ändern", undoManager: undoManager) { $0.exportSettings = settings }
+            document.update(String(localized: "Exporteinstellungen ändern"), undoManager: undoManager) { $0.exportSettings = settings }
         }
         exporter.start(document.project, fileName: fileName)
         dismiss()

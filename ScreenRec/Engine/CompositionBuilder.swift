@@ -35,8 +35,8 @@ final class CompositionBuilder {
 
         var errorDescription: String? {
             switch self {
-            case .missingAsset: "Ein Clip verweist auf eine Mediendatei, die nicht im Projekt steht."
-            case .missingTrack(let path): "In \(path) fehlt die erwartete Bild- oder Tonspur."
+            case .missingAsset: String(localized: "Ein Clip verweist auf eine Mediendatei, die nicht im Projekt steht.")
+            case .missingTrack(let path): String(localized: "In \(path) fehlt die erwartete Bild- oder Tonspur.")
             }
         }
     }

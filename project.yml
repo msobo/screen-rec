@@ -4,6 +4,7 @@ options:
   deploymentTarget:
     macOS: "15.0"
   createIntermediateGroups: true
+  developmentLanguage: en
 
 settings:
   base:
@@ -12,6 +13,8 @@ settings:
     DEVELOPMENT_TEAM: ""
     CODE_SIGN_STYLE: Automatic
     CODE_SIGN_IDENTITY: "-"
+    LOCALIZATION_PREFERS_STRING_CATALOGS: YES
+    SWIFT_EMIT_LOC_STRINGS: YES
 
 packages:
   KeyboardShortcuts:
@@ -36,21 +39,22 @@ targets:
       path: ScreenRec/Info.plist
       properties:
         CFBundleDisplayName: ScreenRec
-        CFBundleShortVersionString: "0.2.0"
-        CFBundleVersion: "2"
+        CFBundleLocalizations: [en, de]
+        CFBundleShortVersionString: "0.3.0"
+        CFBundleVersion: "3"
         LSApplicationCategoryType: public.app-category.video
-        NSMicrophoneUsageDescription: ScreenRec nimmt dein Mikrofon zusammen mit dem Bildschirm auf.
-        NSCameraUsageDescription: ScreenRec blendet auf Wunsch dein Kamerabild in die Aufnahme ein.
-        NSScreenCaptureUsageDescription: ScreenRec benötigt Zugriff auf die Bildschirmaufnahme, um Bildschirme und Fenster aufzunehmen.
+        NSMicrophoneUsageDescription: ScreenRec records your microphone together with the screen.
+        NSCameraUsageDescription: ScreenRec can overlay your camera image on the recording.
+        NSScreenCaptureUsageDescription: ScreenRec needs screen recording access to capture screens and windows.
         CFBundleDocumentTypes:
-          - CFBundleTypeName: ScreenRec-Projekt
+          - CFBundleTypeName: ScreenRec Project
             CFBundleTypeRole: Editor
             LSHandlerRank: Owner
             LSTypeIsPackage: true
             LSItemContentTypes: [de.sobolewski.screenrec.project]
         UTExportedTypeDeclarations:
           - UTTypeIdentifier: de.sobolewski.screenrec.project
-            UTTypeDescription: ScreenRec-Projekt
+            UTTypeDescription: ScreenRec Project
             UTTypeConformsTo: [com.apple.package, public.composite-content]
             UTTypeTagSpecification:
               public.filename-extension: [screenrec]

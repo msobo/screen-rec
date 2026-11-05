@@ -110,29 +110,29 @@ final class TimelineEditor {
         let time = playhead
         let clips = selection.isEmpty ? nil : selection
         var didSplit = false
-        perform("Teilen") { didSplit = EditCommands.split(&$0, at: time, clips: clips) }
+        perform(String(localized: "Teilen")) { didSplit = EditCommands.split(&$0, at: time, clips: clips) }
         if !didSplit { NSSound.beep() }
     }
 
     func deleteSelection(ripple: Bool) {
         if let annotation = selectedAnnotationID {
-            perform("Einblendung löschen") { AnnotationCommands.delete(&$0, annotation) }
+            perform(String(localized: "Einblendung löschen")) { AnnotationCommands.delete(&$0, annotation) }
             selectedAnnotationID = nil
             return
         }
         if let zoom = selectedZoomID {
-            perform("Zoom löschen") { ZoomCommands.delete(&$0, zoom) }
+            perform(String(localized: "Zoom löschen")) { ZoomCommands.delete(&$0, zoom) }
             selectedZoomID = nil
             return
         }
         if let transition = selectedTransitionID {
-            perform("Übergang löschen") { EditCommands.deleteTransition(&$0, transition) }
+            perform(String(localized: "Übergang löschen")) { EditCommands.deleteTransition(&$0, transition) }
             selectedTransitionID = nil
             return
         }
         guard !selection.isEmpty else { return }
         let clips = selection
-        perform(ripple ? "Löschen und Lücke schließen" : "Löschen") {
+        perform(ripple ? String(localized: "Löschen und Lücke schließen") : String(localized: "Löschen")) {
             EditCommands.delete(&$0, clips: clips, ripple: ripple)
         }
         selection = []
@@ -140,18 +140,18 @@ final class TimelineEditor {
 
     func linkSelection() {
         let clips = selection
-        perform("Verknüpfen") { EditCommands.link(&$0, clips: clips) }
+        perform(String(localized: "Verknüpfen")) { EditCommands.link(&$0, clips: clips) }
     }
 
     func unlinkSelection() {
         let clips = selection
-        perform("Verknüpfung aufheben") { EditCommands.unlink(&$0, clips: clips) }
+        perform(String(localized: "Verknüpfung aufheben")) { EditCommands.unlink(&$0, clips: clips) }
     }
 
     func setSpeed(_ speed: Double) {
         let clips = selection
         var didChange = false
-        perform("Geschwindigkeit ändern") { didChange = EditCommands.setSpeed(&$0, clips: clips, to: speed) }
+        perform(String(localized: "Geschwindigkeit ändern")) { didChange = EditCommands.setSpeed(&$0, clips: clips, to: speed) }
         if !didChange { NSSound.beep() }
     }
 
@@ -175,7 +175,7 @@ final class TimelineEditor {
 
     func setSpeed(_ speed: Double, in range: RationalTimeRange, muteAudio: Bool) {
         var newRange: RationalTimeRange?
-        perform("Abschnitt beschleunigen") {
+        perform(String(localized: "Abschnitt beschleunigen")) {
             newRange = EditCommands.setSpeed(&$0, in: range, to: speed, muteAudio: muteAudio)
         }
         guard let newRange else { return NSSound.beep() }
@@ -220,7 +220,7 @@ final class TimelineEditor {
 
     func addTransition(_ kind: Transition.Kind, after fromClipID: Clip.ID) {
         var added: Transition.ID?
-        perform("Übergang hinzufügen") { added = EditCommands.addTransition(&$0, after: fromClipID, kind: kind) }
+        perform(String(localized: "Übergang hinzufügen")) { added = EditCommands.addTransition(&$0, after: fromClipID, kind: kind) }
         if let added { selectedTransitionID = added } else { NSSound.beep() }
     }
 
@@ -236,7 +236,7 @@ final class TimelineEditor {
     func addZoomAtPlayhead() {
         var added: ZoomRegion.ID?
         let range = rangeSelection, time = playhead
-        perform("Zoom hinzufügen") { timeline in
+        perform(String(localized: "Zoom hinzufügen")) { timeline in
             added = range.flatMap { ZoomCommands.add(&timeline, range: $0) } ?? ZoomCommands.add(&timeline, at: time)
         }
         if let added { selectedZoomID = added } else { NSSound.beep() }
@@ -244,7 +244,7 @@ final class TimelineEditor {
 
     func addZoom(in range: RationalTimeRange) {
         var added: ZoomRegion.ID?
-        perform("Zoom hinzufügen") { added = ZoomCommands.add(&$0, range: range) }
+        perform(String(localized: "Zoom hinzufügen")) { added = ZoomCommands.add(&$0, range: range) }
         if let added { selectedZoomID = added } else { NSSound.beep() }
     }
 
@@ -256,11 +256,11 @@ final class TimelineEditor {
 
     /// Fügt am Playhead ein, wenn `time` fehlt.
     func addText(at time: RationalTime? = nil) {
-        addAnnotation(.text(TextNote(text: "Text")), at: time, actionName: "Text einfügen")
+        addAnnotation(.text(TextNote(text: String(localized: "Text"))), at: time, actionName: String(localized: "Text einfügen"))
     }
 
     func addShape(_ kind: ShapeMark.Kind, at time: RationalTime? = nil) {
-        addAnnotation(AnnotationCommands.newShape(kind, in: timeline), at: time, actionName: "\(kind.title) einfügen")
+        addAnnotation(AnnotationCommands.newShape(kind, in: timeline), at: time, actionName: String(localized: "\(kind.title) einfügen"))
     }
 
     private func addAnnotation(_ content: Annotation.Content, at time: RationalTime?, actionName: String) {
@@ -283,7 +283,7 @@ final class TimelineEditor {
         guard let placement = selectedPlacement else { return }
         let offset = (playhead - placement.start).seconds * placement.speed
         var added: Annotation.ID?
-        perform("Tasten teilen") { added = AnnotationCommands.split(&$0, placement.annotation.id, atOffset: offset) }
+        perform(String(localized: "Tasten teilen")) { added = AnnotationCommands.split(&$0, placement.annotation.id, atOffset: offset) }
         if added == nil { NSSound.beep() }
     }
 
@@ -311,7 +311,7 @@ final class TimelineEditor {
         let regions = ZoomCommands.automaticZooms(for: timeline, clickTimes: clickTimes, screenAssetIDs: screens)
         guard !regions.isEmpty else { return NSSound.beep() }
         selectedZoomID = nil
-        perform("Auto-Zoom") { ZoomCommands.replaceAutomaticZooms(&$0, with: regions) }
+        perform(String(localized: "Auto-Zoom")) { ZoomCommands.replaceAutomaticZooms(&$0, with: regions) }
     }
 
     func updateZoom(_ actionName: String, _ id: ZoomRegion.ID, _ change: @escaping (inout ZoomRegion) -> Void) {

@@ -67,6 +67,9 @@ struct Track: Codable, Equatable, Identifiable, Sendable {
     var volume: Float = 1
     /// Nach `timelineStart` sortiert und ohne Überlappung.
     var clips: [Clip] = []
+
+    /// `name` steht unübersetzt im Projekt, damit Projekte beim Sprachwechsel gleich bleiben.
+    var title: String { Bundle.main.localizedString(forKey: name, value: name, table: nil) }
 }
 
 struct Clip: Codable, Equatable, Identifiable, Sendable {
@@ -103,8 +106,8 @@ struct Transition: Codable, Equatable, Identifiable, Sendable {
 
         var title: String {
             switch self {
-            case .crossfade: "Überblenden"
-            case .fadeThroughBlack: "Durch Schwarz"
+            case .crossfade: String(localized: "Überblenden")
+            case .fadeThroughBlack: String(localized: "Durch Schwarz")
             }
         }
     }
@@ -121,7 +124,7 @@ struct ZoomRegion: Codable, Equatable, Identifiable, Sendable {
     enum Focus: String, Codable, CaseIterable, Sendable {
         case cursor, point
 
-        var title: String { self == .cursor ? "Cursor folgen" : "Fester Punkt" }
+        var title: String { self == .cursor ? String(localized: "Cursor folgen") : String(localized: "Fester Punkt") }
     }
 
     var id = UUID()

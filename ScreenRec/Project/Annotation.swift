@@ -38,9 +38,9 @@ struct Annotation: Codable, Equatable, Identifiable, Sendable {
     /// Überschrift im Inspektor.
     var kindTitle: String {
         switch content {
-        case .keys: "Tasten"
-        case .text: "Text"
-        case .shape: "Symbol"
+        case .keys: String(localized: "Tasten")
+        case .text: String(localized: "Text")
+        case .shape: String(localized: "Symbol")
         }
     }
 
@@ -69,12 +69,12 @@ enum AnnotationColor: String, Codable, CaseIterable, Sendable {
 
     var title: String {
         switch self {
-        case .red: "Rot"
-        case .orange: "Orange"
-        case .yellow: "Gelb"
-        case .green: "Grün"
-        case .blue: "Blau"
-        case .white: "Weiß"
+        case .red: String(localized: "Rot")
+        case .orange: String(localized: "Orange")
+        case .yellow: String(localized: "Gelb")
+        case .green: String(localized: "Grün")
+        case .blue: String(localized: "Blau")
+        case .white: String(localized: "Weiß")
         }
     }
 
@@ -147,10 +147,10 @@ struct ShapeMark: Codable, Equatable, Sendable {
 
         var title: String {
             switch self {
-            case .arrow: "Pfeil"
-            case .ellipse: "Kreis"
-            case .rectangle: "Rechteck"
-            case .badge: "Nummer"
+            case .arrow: String(localized: "Pfeil")
+            case .ellipse: String(localized: "Kreis")
+            case .rectangle: String(localized: "Rechteck")
+            case .badge: String(localized: "Nummer")
             }
         }
     }

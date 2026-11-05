@@ -30,7 +30,7 @@ struct SpeedSheet: View {
             HStack {
                 Text("Geschwindigkeit").font(.tapeDisplay(18)).foregroundStyle(Tape.ink)
                 Spacer()
-                ModuleTag(text: "TEMPO")
+                ModuleTag(text: String(localized: "TEMPO"))
             }
             HStack {
                 Text("\(TimeFormatting.timecode(range.start)) – \(TimeFormatting.timecode(range.end))")

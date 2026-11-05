@@ -25,7 +25,7 @@ struct RecorderHUD: View {
                         Button {
                             appState.togglePause()
                         } label: {
-                            Label(appState.phase == .paused ? "Fortsetzen" : "Pausieren",
+                            Label(appState.phase == .paused ? String(localized: "Fortsetzen") : String(localized: "Pausieren"),
                                   systemImage: appState.phase == .paused ? "play.fill" : "pause.fill")
                                 .frame(maxWidth: .infinity)
                         }
@@ -91,6 +91,7 @@ struct RecorderHUD: View {
                     Text("REC/STOP \(shortcut.description)")
                         .caseLabel(10, color: Tape.inkSoft)
                 }
+                AboutButton()
             }
             .buttonStyle(.key)
         }
@@ -132,12 +133,12 @@ struct RecorderHUD: View {
 
     private var statusText: String {
         switch appState.phase {
-        case .idle: "BEREIT"
-        case .selectingSource: "QUELLE WÄHLEN"
-        case .countdown: "GLEICH GEHT'S LOS"
+        case .idle: String(localized: "BEREIT")
+        case .selectingSource: String(localized: "QUELLE WÄHLEN")
+        case .countdown: String(localized: "GLEICH GEHT'S LOS")
         case .recording: "REC · \(frameRate)FPS"
-        case .paused: "PAUSE"
-        case .finishing: "SPEICHERT …"
+        case .paused: String(localized: "PAUSE")
+        case .finishing: String(localized: "SPEICHERT …")
         }
     }
 

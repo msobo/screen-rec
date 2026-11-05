@@ -11,8 +11,8 @@ final class CameraCapture: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
 
         var errorDescription: String? {
             switch self {
-            case .noCamera: "Es wurde keine Kamera gefunden."
-            case .cannotAdd: "Die Kamera konnte nicht verwendet werden."
+            case .noCamera: String(localized: "Es wurde keine Kamera gefunden.")
+            case .cannotAdd: String(localized: "Die Kamera konnte nicht verwendet werden.")
             }
         }
     }

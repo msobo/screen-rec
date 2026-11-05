@@ -579,19 +579,19 @@ final class TimelineCanvas: NSView {
         let point = convert(event.locationInWindow, from: nil)
         switch drag {
         case .move(_, _, _, let original, _, true):
-            if let preview, preview != original { editor?.commit(preview, actionName: "Clips verschieben") }
+            if let preview, preview != original { editor?.commit(preview, actionName: String(localized: "Clips verschieben")) }
         case .trim(_, _, _, let original):
-            if let preview, preview != original { editor?.commit(preview, actionName: "Trimmen") }
+            if let preview, preview != original { editor?.commit(preview, actionName: String(localized: "Trimmen")) }
         case .transitionDuration(_, _, let original):
-            if let preview, preview != original { editor?.commit(preview, actionName: "Übergangsdauer ändern") }
+            if let preview, preview != original { editor?.commit(preview, actionName: String(localized: "Übergangsdauer ändern")) }
         case .zoomMove(_, _, let original, true):
-            if let preview, preview != original { editor?.commit(preview, actionName: "Zoom verschieben") }
+            if let preview, preview != original { editor?.commit(preview, actionName: String(localized: "Zoom verschieben")) }
         case .zoomTrim(_, _, _, let original):
-            if let preview, preview != original { editor?.commit(preview, actionName: "Zoom-Dauer ändern") }
+            if let preview, preview != original { editor?.commit(preview, actionName: String(localized: "Zoom-Dauer ändern")) }
         case .annotationMove(_, _, let original, true):
-            if let preview, preview != original { editor?.commit(preview, actionName: "Einblendung verschieben") }
+            if let preview, preview != original { editor?.commit(preview, actionName: String(localized: "Einblendung verschieben")) }
         case .annotationTrim(_, _, _, let original):
-            if let preview, preview != original { editor?.commit(preview, actionName: "Einblendungsdauer ändern") }
+            if let preview, preview != original { editor?.commit(preview, actionName: String(localized: "Einblendungsdauer ändern")) }
         case .zoomCreate(let anchor, let current, _, true):
             let start = min(anchor, current), end = max(anchor, current)
             editor?.addZoom(in: RationalTimeRange(start: start, duration: end - start))
@@ -705,62 +705,62 @@ final class TimelineCanvas: NSView {
         switch hit(at: point) {
         case .clip(let trackIndex, let clip, _):
             if !selection.contains(clip.id) { setSelection(timeline.linkedClipIDs([clip.id])) }
-            menu.addItem(ActionMenuItem("Am Playhead teilen") { editor.splitAtPlayhead() })
+            menu.addItem(ActionMenuItem(String(localized: "Am Playhead teilen")) { editor.splitAtPlayhead() })
             menu.addItem(.separator())
-            menu.addItem(ActionMenuItem("Löschen") { editor.deleteSelection(ripple: false) })
-            menu.addItem(ActionMenuItem("Löschen und Lücke schließen") { editor.deleteSelection(ripple: true) })
+            menu.addItem(ActionMenuItem(String(localized: "Löschen")) { editor.deleteSelection(ripple: false) })
+            menu.addItem(ActionMenuItem(String(localized: "Löschen und Lücke schließen")) { editor.deleteSelection(ripple: true) })
             menu.addItem(.separator())
-            menu.addItem(ActionMenuItem("Verknüpfen", enabled: editor.canLink) { editor.linkSelection() })
-            menu.addItem(ActionMenuItem("Verknüpfung aufheben", enabled: editor.canUnlink) { editor.unlinkSelection() })
+            menu.addItem(ActionMenuItem(String(localized: "Verknüpfen"), enabled: editor.canLink) { editor.linkSelection() })
+            menu.addItem(ActionMenuItem(String(localized: "Verknüpfung aufheben"), enabled: editor.canUnlink) { editor.unlinkSelection() })
             if let cut = nearestCut(to: point, trackIndex: trackIndex, involving: clip.id) {
                 menu.addItem(.separator())
                 for kind in Transition.Kind.allCases {
-                    menu.addItem(ActionMenuItem("Übergang „\(kind.title)“ hinzufügen") {
+                    menu.addItem(ActionMenuItem(String(localized: "Übergang „\(kind.title)“ hinzufügen")) {
                         editor.addTransition(kind, after: cut.fromClipID)
                     })
                 }
             }
             menu.addItem(.separator())
-            menu.addItem(ActionMenuItem("Geschwindigkeit …") { editor.showSpeedSheet() })
+            menu.addItem(ActionMenuItem(String(localized: "Geschwindigkeit …")) { editor.showSpeedSheet() })
         case .transition(let transition, _):
             setSelectedTransition(transition.id)
             for kind in Transition.Kind.allCases where kind != transition.kind {
-                menu.addItem(ActionMenuItem("In „\(kind.title)“ ändern") {
-                    editor.perform("Übergang ändern") { EditCommands.updateTransition(&$0, transition.id) { $0.kind = kind } }
+                menu.addItem(ActionMenuItem(String(localized: "In „\(kind.title)“ ändern")) {
+                    editor.perform(String(localized: "Übergang ändern")) { EditCommands.updateTransition(&$0, transition.id) { $0.kind = kind } }
                 })
             }
-            menu.addItem(ActionMenuItem("Übergang löschen") { editor.deleteSelection(ripple: false) })
+            menu.addItem(ActionMenuItem(String(localized: "Übergang löschen")) { editor.deleteSelection(ripple: false) })
         case .annotationLane:
             let time = time(atX: point.x)
-            menu.addItem(ActionMenuItem("Text hier einfügen", enabled: editor.canAddAnnotation) { editor.addText(at: time) })
+            menu.addItem(ActionMenuItem(String(localized: "Text hier einfügen"), enabled: editor.canAddAnnotation) { editor.addText(at: time) })
             for kind in ShapeMark.Kind.allCases {
-                menu.addItem(ActionMenuItem("\(kind.title) hier einfügen", enabled: editor.canAddAnnotation) {
+                menu.addItem(ActionMenuItem(String(localized: "\(kind.title) hier einfügen"), enabled: editor.canAddAnnotation) {
                     editor.addShape(kind, at: time)
                 })
             }
         case .annotation(let placement, _):
             setSelectedAnnotation(placement.annotation.id)
-            menu.addItem(ActionMenuItem("Einblendung löschen") { editor.deleteSelection(ripple: false) })
+            menu.addItem(ActionMenuItem(String(localized: "Einblendung löschen")) { editor.deleteSelection(ripple: false) })
         case .zoomLane:
             let time = time(atX: point.x)
-            menu.addItem(ActionMenuItem("Zoom hier hinzufügen") {
+            menu.addItem(ActionMenuItem(String(localized: "Zoom hier hinzufügen")) {
                 var added: ZoomRegion.ID?
-                editor.perform("Zoom hinzufügen") { added = ZoomCommands.add(&$0, at: time) }
+                editor.perform(String(localized: "Zoom hinzufügen")) { added = ZoomCommands.add(&$0, at: time) }
                 if let added { editor.selectedZoomID = added } else { NSSound.beep() }
             })
             menu.addItem(.separator())
-            menu.addItem(ActionMenuItem("Auto-Zoom aus Klicks erzeugen", enabled: editor.canGenerateAutoZoom) {
+            menu.addItem(ActionMenuItem(String(localized: "Auto-Zoom aus Klicks erzeugen"), enabled: editor.canGenerateAutoZoom) {
                 editor.generateAutoZoom()
             })
         case .zoom(let zoom, _):
             setSelectedZoom(zoom.id)
             for focus in ZoomRegion.Focus.allCases where focus != zoom.focus {
                 menu.addItem(ActionMenuItem(focus.title) {
-                    editor.updateZoom("Zoom ändern", zoom.id) { $0.focus = focus }
+                    editor.updateZoom(String(localized: "Zoom ändern"), zoom.id) { $0.focus = focus }
                 })
             }
             menu.addItem(.separator())
-            menu.addItem(ActionMenuItem("Zoom löschen") { editor.deleteSelection(ripple: false) })
+            menu.addItem(ActionMenuItem(String(localized: "Zoom löschen")) { editor.deleteSelection(ripple: false) })
         case .markerLane:
             let time = time(atX: point.x)
             if rangeSelection?.contains(time) != true,
@@ -770,12 +770,12 @@ final class TimelineCanvas: NSView {
                 needsDisplay = true
             }
             let range = editor.rangeSelection
-            menu.addItem(ActionMenuItem("Geschwindigkeit …", enabled: range != nil) { editor.showSpeedSheet() })
-            menu.addItem(ActionMenuItem("Normale Geschwindigkeit", enabled: range != nil) {
+            menu.addItem(ActionMenuItem(String(localized: "Geschwindigkeit …"), enabled: range != nil) { editor.showSpeedSheet() })
+            menu.addItem(ActionMenuItem(String(localized: "Normale Geschwindigkeit"), enabled: range != nil) {
                 if let range { editor.setSpeed(1, in: range, muteAudio: false) }
             })
             menu.addItem(.separator())
-            menu.addItem(ActionMenuItem("Bereich aufheben", enabled: range != nil) { editor.clearRange() })
+            menu.addItem(ActionMenuItem(String(localized: "Bereich aufheben"), enabled: range != nil) { editor.clearRange() })
         default:
             return nil
         }
@@ -990,9 +990,9 @@ final class TimelineCanvas: NSView {
     /// Beschriftung als kleines Etikett oben links, das beim Scrollen am sichtbaren Rand bleibt.
     private func drawLabel(for clip: Clip, track: Track, in rect: NSRect) {
         guard rect.width > 30 else { return }
-        var text = track.name.uppercased()
+        var text = track.title.uppercased()
         if clip.speed != 1 { text += " · " + Self.formatSpeed(clip.speed) }
-        if clip.isMuted, track.kind == .audio { text += " · STUMM" }
+        if clip.isMuted, track.kind == .audio { text += String(localized: " · STUMM") }
         if clip.linkGroupID != nil { text = "🔗 " + text }
         let isVideo = track.kind == .video
         let paragraph = NSMutableParagraphStyle()
@@ -1130,7 +1130,7 @@ final class TimelineCanvas: NSView {
             NSRect(x: x(for: range.start) - 1, y: lane.minY, width: 2, height: lane.height - 1).fill()
             NSRect(x: x(for: range.end) - 1, y: lane.minY, width: 2, height: lane.height - 1).fill()
         } else if segments.isEmpty {
-            let hint = NSAttributedString(string: "Hier ziehen, um einen Bereich zu markieren (z. B. zum Beschleunigen)",
+            let hint = NSAttributedString(string: String(localized: "Hier ziehen, um einen Bereich zu markieren (z. B. zum Beschleunigen)"),
                                           attributes: [.font: TapeFont.nsMono(9),
                                                        .foregroundColor: NSColor.tapeEdge])
             hint.draw(at: NSPoint(x: visibleRect.minX + TimelineMetrics.leadingInset, y: lane.minY + 1))
@@ -1209,7 +1209,7 @@ final class TimelineCanvas: NSView {
             NSRect(x: rect.maxX - ease, y: rect.minY, width: ease, height: rect.height).fill(using: .sourceOver)
 
             var text = "🔍 " + Self.formatSpeed(zoom.scale)
-            if zoom.focus == .point { text += " · FEST" }
+            if zoom.focus == .point { text += String(localized: " · FEST") }
             if zoom.isAutomatic { text += " · AUTO" }
             let label = NSAttributedString(string: text, attributes: attributes)
             if rect.width > label.size().width + 10 {
@@ -1236,7 +1236,7 @@ final class TimelineCanvas: NSView {
             NSColor.tapeTeal.withAlphaComponent(0.35).setFill()
             NSBezierPath(roundedRect: rect, xRadius: 5, yRadius: 5).fill()
         } else if timeline.zooms.isEmpty {
-            let hint = NSAttributedString(string: "Zoom: hier ziehen, um einen Zoom aufzuziehen, oder Rechtsklick für Auto-Zoom",
+            let hint = NSAttributedString(string: String(localized: "Zoom: hier ziehen, um einen Zoom aufzuziehen, oder Rechtsklick für Auto-Zoom"),
                                           attributes: [.font: TapeFont.nsMono(9), .foregroundColor: NSColor.tapeEdge])
             hint.draw(at: NSPoint(x: visibleRect.minX + TimelineMetrics.leadingInset,
                                   y: lane.midY - hint.size().height / 2))

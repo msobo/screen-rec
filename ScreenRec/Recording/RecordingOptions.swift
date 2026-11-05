@@ -24,9 +24,9 @@ struct RecordingOptions: Sendable {
 
         var title: String {
             switch self {
-            case .off: "Aus"
-            case .shortcuts: "Nur Kürzel"
-            case .all: "Alle Tasten"
+            case .off: String(localized: "Aus")
+            case .shortcuts: String(localized: "Nur Kürzel")
+            case .all: String(localized: "Alle Tasten")
             }
         }
     }
@@ -37,9 +37,9 @@ struct RecordingOptions: Sendable {
 
         var title: String {
             switch self {
-            case .display: "Bildschirm"
-            case .window: "Fenster"
-            case .application: "App"
+            case .display: String(localized: "Bildschirm")
+            case .window: String(localized: "Fenster")
+            case .application: String(localized: "App")
             }
         }
     }

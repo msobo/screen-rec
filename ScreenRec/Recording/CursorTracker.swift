@@ -145,7 +145,7 @@ enum KeystrokeLabel {
     static let spaceCap = "␣"
 
     private static let specialKeys: [UInt16: String] = [
-        36: "↩", 48: "⇥", 49: "Leertaste", 51: "⌫", 53: "esc", 117: "⌦",
+        36: "↩", 48: "⇥", 49: String(localized: "Leertaste"), 51: "⌫", 53: "esc", 117: "⌦",
         123: "←", 124: "→", 125: "↓", 126: "↑",
         122: "F1", 120: "F2", 99: "F3", 118: "F4", 96: "F5", 97: "F6", 98: "F7", 100: "F8",
         101: "F9", 109: "F10", 103: "F11", 111: "F12",

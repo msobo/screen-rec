@@ -16,14 +16,14 @@ final class Exporter: @unchecked Sendable {
 
         var errorDescription: String? {
             switch self {
-            case .noVideo: "Die Timeline enthält kein Bild."
-            case .cannotRead(let error): "Die Timeline konnte nicht gelesen werden: \(Self.describe(error))"
-            case .cannotWrite(let error): "Die Datei konnte nicht geschrieben werden: \(Self.describe(error))"
+            case .noVideo: String(localized: "Die Timeline enthält kein Bild.")
+            case .cannotRead(let error): String(localized: "Die Timeline konnte nicht gelesen werden: \(Self.describe(error))")
+            case .cannotWrite(let error): String(localized: "Die Datei konnte nicht geschrieben werden: \(Self.describe(error))")
             }
         }
 
         private static func describe(_ error: (any Error)?) -> String {
-            error?.localizedDescription ?? "unbekannter Fehler"
+            error?.localizedDescription ?? String(localized: "unbekannter Fehler")
         }
     }
 

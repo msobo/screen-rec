@@ -10,7 +10,7 @@
 	<array>
 		<dict>
 			<key>CFBundleTypeName</key>
-			<string>ScreenRec-Projekt</string>
+			<string>ScreenRec Project</string>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>LSHandlerRank</key>
@@ -29,22 +29,27 @@
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>de</string>
+	</array>
 	<key>CFBundleName</key>
 	<string>$(PRODUCT_NAME)</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.2.0</string>
+	<string>0.3.0</string>
 	<key>CFBundleVersion</key>
-	<string>2</string>
+	<string>3</string>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.video</string>
 	<key>NSCameraUsageDescription</key>
-	<string>ScreenRec blendet auf Wunsch dein Kamerabild in die Aufnahme ein.</string>
+	<string>ScreenRec can overlay your camera image on the recording.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>ScreenRec nimmt dein Mikrofon zusammen mit dem Bildschirm auf.</string>
+	<string>ScreenRec records your microphone together with the screen.</string>
 	<key>NSScreenCaptureUsageDescription</key>
-	<string>ScreenRec benötigt Zugriff auf die Bildschirmaufnahme, um Bildschirme und Fenster aufzunehmen.</string>
+	<string>ScreenRec needs screen recording access to capture screens and windows.</string>
 	<key>UTExportedTypeDeclarations</key>
 	<array>
 		<dict>
@@ -54,7 +59,7 @@
 				<string>public.composite-content</string>
 			</array>
 			<key>UTTypeDescription</key>
-			<string>ScreenRec-Projekt</string>
+			<string>ScreenRec Project</string>
 			<key>UTTypeIdentifier</key>
 			<string>de.sobolewski.screenrec.project</string>
 			<key>UTTypeTagSpecification</key>

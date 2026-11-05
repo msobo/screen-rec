@@ -31,7 +31,7 @@ final class ProjectDocument: ReferenceFileDocument, @unchecked Sendable {
         case missingProjectFile
 
         var errorDescription: String? {
-            "Im Paket fehlt die Datei \(ProjectDocument.projectFileName). Aufnahmen aus der ersten Testversion lassen sich nicht öffnen."
+            String(localized: "Im Paket fehlt die Datei \(ProjectDocument.projectFileName). Aufnahmen aus der ersten Testversion lassen sich nicht öffnen.")
         }
     }
 

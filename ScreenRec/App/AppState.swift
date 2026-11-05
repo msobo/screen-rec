@@ -77,22 +77,22 @@ final class AppState {
 
                 if options.captureMicrophone, await !Self.requestAccess(for: .audio) {
                     options.captureMicrophone = false
-                    errorMessage = "Kein Mikrofonzugriff – es wird ohne Mikrofon aufgenommen."
+                    errorMessage = String(localized: "Kein Mikrofonzugriff – es wird ohne Mikrofon aufgenommen.")
                 }
                 if options.captureCamera, await !Self.requestAccess(for: .video) {
                     options.captureCamera = false
-                    errorMessage = "Kein Kamerazugriff – es wird ohne Kamera aufgenommen."
+                    errorMessage = String(localized: "Kein Kamerazugriff – es wird ohne Kamera aufgenommen.")
                 }
                 if options.keystrokeMode != .off, !KeystrokePermission.isGranted(prompt: true) {
                     options.keystrokeMode = .off
-                    errorMessage = "Tastenanschläge brauchen die Freigabe unter Bedienungshilfen und werden diesmal nicht aufgezeichnet."
+                    errorMessage = String(localized: "Tastenanschläge brauchen die Freigabe unter Bedienungshilfen und werden diesmal nicht aufgezeichnet.")
                 }
 
                 try await CountdownOverlay.run(seconds: options.countdownSeconds) { self.phase = .countdown($0) }
 
                 let session = try RecordingSession(filter: filter, options: options)
                 session.onUnexpectedStop = { error in
-                    self.errorMessage = "Aufnahme wurde beendet: \(error.localizedDescription)"
+                    self.errorMessage = String(localized: "Aufnahme wurde beendet: \(error.localizedDescription)")
                     self.stopRecording()
                 }
                 try await session.start()
@@ -104,7 +104,7 @@ final class AppState {
                 phase = .idle
             } catch {
                 picker.deactivate()
-                errorMessage = "Aufnahme konnte nicht gestartet werden: \(error.localizedDescription)"
+                errorMessage = String(localized: "Aufnahme konnte nicht gestartet werden: \(error.localizedDescription)")
                 phase = .idle
             }
         }
@@ -121,7 +121,7 @@ final class AppState {
                 try await ProjectFactory.createProjectFile(forRecordingAt: result.package)
                 try await openProject(at: result.package)
             } catch {
-                errorMessage = "Aufnahme konnte nicht gespeichert werden: \(error.localizedDescription)"
+                errorMessage = String(localized: "Aufnahme konnte nicht gespeichert werden: \(error.localizedDescription)")
             }
             self.session = nil
             picker.deactivate()

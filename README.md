@@ -1,51 +1,55 @@
 # ScreenRec
 
-Bildschirm aufnehmen, im Editor schneiden und fertig exportieren. Eine native Mac-App.
+Record your screen, edit it in the built-in editor and export the finished video. A native Mac app.
 
 ## Installation
 
-Voraussetzung ist macOS 15 oder neuer.
+ScreenRec requires macOS 15 or later.
 
-1. Lade die aktuelle `ScreenRec-x.y.z.dmg` von der [Release-Seite](https://github.com/msobo/ScreenRec/releases/latest).
-2. Öffne die DMG und ziehe **ScreenRec** in den Ordner **Programme**.
-3. Starte ScreenRec. macOS blockiert den ersten Start, weil die App nicht von Apple notarisiert ist.
-4. Öffne *Systemeinstellungen → Datenschutz & Sicherheit*, scrolle nach unten und klicke bei ScreenRec auf **Trotzdem öffnen**.
-5. Erlaube beim ersten Aufnehmen die **Bildschirmaufnahme**. Mikrofon und Kamera fragt die App nur ab, wenn du sie einschaltest.
+1. Download the latest `ScreenRec-x.y.z.dmg` from the [releases page](https://github.com/msobo/ScreenRec/releases/latest).
+2. Open the DMG and drag **ScreenRec** into the **Applications** folder.
+3. Start ScreenRec. macOS blocks the first launch because the app is not notarized by Apple.
+4. Open *System Settings → Privacy & Security*, scroll down and click **Open Anyway** next to ScreenRec.
+5. Allow **Screen Recording** the first time you record. The app only asks for the microphone and camera when you turn them on.
 
-Nach einem Update musst du die Erlaubnis für die Bildschirmaufnahme eventuell neu erteilen. Falls die Aufnahme nicht startet, entferne ScreenRec unter *Datenschutz & Sicherheit → Bildschirm- & Systemaudioaufnahme* und erlaube die App erneut.
+After an update you may have to grant screen recording permission again. If recording does not start, remove ScreenRec under *Privacy & Security → Screen & System Audio Recording* and allow the app again.
 
-### Aus dem Quellcode bauen
+### Building from source
 
-Du brauchst Xcode und [XcodeGen](https://github.com/yonaskolb/XcodeGen).
+You need Xcode and [XcodeGen](https://github.com/yonaskolb/XcodeGen).
 
 ```bash
 xcodegen generate
 open ScreenRec.xcodeproj
 ```
 
-## Kurzanleitung
+## Quick start
 
-**Aufnehmen**
+**Recording**
 
-1. Beim Start öffnet sich das Aufnahmefenster. Hast du es geschlossen, holst du es über das Symbol in der Menüleiste und **ScreenRec öffnen** zurück.
-2. Wähle im Fenster aus, ob Systemton, Mikrofon oder Kamera mitlaufen sollen.
-3. Starte die Aufnahme mit **REC** oder mit **⌘⇧2**. Das Tastenkürzel funktioniert auch, wenn die App im Hintergrund läuft.
-4. Wähle den Bildschirm oder das Fenster aus. Nach dem Countdown läuft die Aufnahme.
-5. Beende die Aufnahme wieder mit **⌘⇧2** oder über das Symbol in der Menüleiste. Der Editor öffnet sich automatisch.
+1. The recording window opens at launch. If you closed it, bring it back with the menu bar icon and **Open ScreenRec**.
+2. Choose in the window whether system audio, the microphone or the camera should be recorded.
+3. Start recording with **REC** or **⌘⇧2**. The shortcut also works while the app is in the background.
+4. Select the screen or window. Recording starts after the countdown.
+5. Stop recording with **⌘⇧2** or the menu bar icon. The editor opens automatically.
 
-**Bearbeiten**
+**Editing**
 
-- **Abspielen:** Leertaste, oder J, K und L für rückwärts, Pause und vorwärts
-- **Schneiden:** Playhead setzen und **⌘B** drücken
-- **Löschen:** Clip auswählen und **⌫** drücken, mit **⇧⌫** rückt der Rest nach
-- **Beschleunigen:** Bereich mit **I** und **O** markieren, dann **⌘R** drücken und das Tempo wählen
+- **Playback:** Space, or J, K and L for backward, pause and forward
+- **Cut:** place the playhead and press **⌘B**
+- **Delete:** select a clip and press **⌫**, or **⇧⌫** to close the gap
+- **Speed up:** mark a range with **I** and **O**, press **⌘R** and choose the speed
 
-**Exportieren**
+**Exporting**
 
-Drücke **⌘E**, wähle das Preset **YouTube** und die Auflösung und klicke auf **Exportieren**.
+Press **⌘E**, choose the **YouTube** preset and the resolution, and click **Export**.
 
-Aufnahmen landen als Projekte unter `~/Movies/ScreenRec`. Änderungen sicherst du mit **⌘S**, die Originalaufnahme bleibt dabei unverändert.
+Recordings are stored as projects in `~/Movies/ScreenRec`. Save changes with **⌘S**; the original recording stays untouched.
 
-## Lizenz
+## Language
 
-GPL-3.0, siehe [LICENSE](LICENSE). Hinweise zu verwendeten Komponenten stehen in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+ScreenRec is in English by default. To switch to German, open **Settings…**, choose **Deutsch** under **Language** and restart the app.
+
+## License
+
+GPL-3.0, see [LICENSE](LICENSE). Notes on the components used are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
