@@ -1,0 +1,85 @@
+name: ScreenRec
+options:
+  bundleIdPrefix: de.sobolewski
+  deploymentTarget:
+    macOS: "15.0"
+  createIntermediateGroups: true
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    MACOSX_DEPLOYMENT_TARGET: "15.0"
+    DEVELOPMENT_TEAM: ""
+    CODE_SIGN_STYLE: Automatic
+    CODE_SIGN_IDENTITY: "-"
+
+packages:
+  KeyboardShortcuts:
+    url: https://github.com/sindresorhus/KeyboardShortcuts
+    from: "2.0.0"
+
+targets:
+  ScreenRec:
+    type: application
+    platform: macOS
+    sources:
+      - ScreenRec
+    dependencies:
+      - package: KeyboardShortcuts
+    entitlements:
+      path: ScreenRec/ScreenRec.entitlements
+      properties:
+        com.apple.security.app-sandbox: false
+        com.apple.security.device.audio-input: true
+        com.apple.security.device.camera: true
+    info:
+      path: ScreenRec/Info.plist
+      properties:
+        CFBundleDisplayName: ScreenRec
+        CFBundleShortVersionString: "0.1.0"
+        CFBundleVersion: "1"
+        LSApplicationCategoryType: public.app-category.video
+        NSMicrophoneUsageDescription: ScreenRec nimmt dein Mikrofon zusammen mit dem Bildschirm auf.
+        NSCameraUsageDescription: ScreenRec blendet auf Wunsch dein Kamerabild in die Aufnahme ein.
+        NSScreenCaptureUsageDescription: ScreenRec benötigt Zugriff auf die Bildschirmaufnahme, um Bildschirme und Fenster aufzunehmen.
+        CFBundleDocumentTypes:
+          - CFBundleTypeName: ScreenRec-Projekt
+            CFBundleTypeRole: Editor
+            LSHandlerRank: Owner
+            LSTypeIsPackage: true
+            LSItemContentTypes: [de.sobolewski.screenrec.project]
+        UTExportedTypeDeclarations:
+          - UTTypeIdentifier: de.sobolewski.screenrec.project
+            UTTypeDescription: ScreenRec-Projekt
+            UTTypeConformsTo: [com.apple.package, public.composite-content]
+            UTTypeTagSpecification:
+              public.filename-extension: [screenrec]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: de.sobolewski.ScreenRec
+        ENABLE_HARDENED_RUNTIME: true
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        GENERATE_INFOPLIST_FILE: false
+
+  ScreenRecTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - ScreenRecTests
+    dependencies:
+      - target: ScreenRec
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: true
+        BUNDLE_LOADER: "$(TEST_HOST)"
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/ScreenRec.app/Contents/MacOS/ScreenRec"
+
+schemes:
+  ScreenRec:
+    build:
+      targets:
+        ScreenRec: all
+        ScreenRecTests: [test]
+    test:
+      targets:
+        - ScreenRecTests
